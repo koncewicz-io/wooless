@@ -1,0 +1,264 @@
+.p24-payment__logo {
+  max-width: 80px;
+}
+
+.p24-1clicks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.p24-1clicks__items {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.p24-1clicks__label, .p24-1clicks__or {
+  font-size: 75%;
+  text-align: center;
+}
+
+.p24-1clicks__or {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.p24-1clicks__or:after, .p24-1clicks__or:before {
+  content: "";
+  width: 100%;
+  height: 1px;
+  background: rgba(0, 0, 0, .2);
+}
+
+.p24-1click {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  cursor: pointer;
+  background: white;
+  border-radius: 6px;
+  padding: 10px;
+  border-width: 2px;
+  outline: none;
+  position: relative;
+}
+
+.p24-1click__logo {
+  margin: 0;
+}
+
+.p24-1click__logo img {
+  display: block;
+}
+
+.p24-1click--card {
+  aspect-ratio: 85.6 / 53.98;
+}
+
+.p24-1click--active {
+  outline: 3px solid;
+  outline-offset: 1px;
+}
+
+.p24-1click--card__number {
+  gap: 0.5em;
+  display: flex;
+  font-size: 110%;
+  font-family: monospace;
+  align-items: center;
+  margin-bottom: 1.5em;
+}
+
+.p24-1click--card__valid {
+  font-family: monospace;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  opacity: .8;
+  font-size: 80%;
+  font-weight: 800;
+}
+
+.p24-1click--blik__valid {
+  font-family: monospace;
+  opacity: .8;
+  font-size: 75%;
+}
+
+.p24-1click--card__number small {
+  font-size: 75%;
+}
+
+.p24-1click--card__logo {
+  margin-bottom: 0;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+
+#card-tokenizer {
+  display: flex;
+  justify-content: center;
+}
+
+/*#card-whitelabel iframe {*/
+/*  display: block !important;*/
+/*  height: 400px;*/
+/*  width: 100%;*/
+/*  visibility: visible !important;*/
+/*}*/
+
+.woocommerce table.shop_table .shop_table__cell-description td {
+  border-top: none;
+  padding-top: 0;
+  opacity: .5;
+  font-size: 75%;
+}
+
+.p24-waiting {
+  position: absolute;
+  background: rgba(255, 255, 255, .85);
+  font-size: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-direction: column;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.p24-waiting.hidden {
+  display: none;
+}
+
+.p24-waiting .wc-block-components-spinner {
+  position: relative;
+  height: auto;
+}
+
+.p24-blik-code-input {
+  margin-top: 0 !important;
+}
+
+.p24-payment-input {
+  input[type=text] {
+    padding: 0 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 3rem;
+  }
+}
+
+.woocommerce-order-pay .p24-payment-container {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.wc-block-components-radio-control-accordion-content:has(.p24-payment-container:empty) {
+  display: none;
+}
+
+.p24-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.p24-methods + .woocommerce-input-wrapper {
+  margin-top: 24px;
+  display: block;
+}
+
+.p24-methods__items {
+  --logo-size: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, auto));
+  gap: 12px;
+  border-radius: 4px;
+}
+
+
+.p24-methods__items--featured {
+  --logo-size: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, auto));
+}
+
+.p24-method-item {
+  cursor: pointer;
+  display: flex;
+  background: white;
+  border-radius: 4px;
+  padding: 10px;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  flex: 0 1 100px;
+  border: 1px solid hsla(0, 0%, 7%, .11);
+  user-select: none;
+  position: relative;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.p24-method-item--active {
+  outline: 2px solid black;
+}
+
+.p24-method-item picture {
+  aspect-ratio: 16/9;
+  height: var(--logo-size);
+  max-height: var(--logo-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.p24-method-item picture img {
+  max-width: 100%;
+  max-height: var(--logo-size);
+}
+
+
+.p24-payment-container .p24-checkbox:first-child .wc-block-components-checkbox {
+  margin-top: 0;
+}
+
+input[id^="payment_method_p24-"] + label img {
+  max-height: 30px;
+}
+
+
+.p24-payment-container .wc-block-components-notice-banner:first-child {
+  margin-top: 0;
+}
+
+
+#p24_installment {
+  margin: 20px 0;
+}
+
+#p24_installment:has(#p24_installment_modal) #p24_installment_widget div[class^="widget"] > div {
+  cursor: pointer;
+}
+
+.p24-currency__submit {
+  line-height: inherit;
+  padding-top: 0.3rem !important;
+  padding-right: 0.5rem !important;
+  padding-bottom: 0.3rem !important;
+  padding-left: 0.5rem !important;
+}

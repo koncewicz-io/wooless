@@ -1,0 +1,37 @@
+services:
+  wooless-app:
+    container_name: wooless-app
+    image: wooless-app
+    ports:
+      - '443:443'
+      #- '8000:8000'
+    volumes:
+      - ./../app:/var/www/
+    networks:
+      - wooless
+  wooless-wordpress-app:
+    image: wooless-wordpress-app
+    container_name: wooless-wordpress-app
+    environment:
+      WORDPRESS_DB_HOST: wooless-wordpress-db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: secret
+      WORDPRESS_DB_NAME: wordpress
+      JWT_AUTH_SECRET_KEY: JWT_AUTH_SECRET_KEY
+    depends_on:
+      - wooless-wordpress-db
+    networks:
+      - wooless
+  wooless-wordpress-db:
+    image: mysql:5.7
+    container_name: wooless-wordpress-db
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+    networks:
+      - wooless
+networks:
+  wooless:
+    external: true

@@ -1,0 +1,84 @@
+{
+    {$CADDY_GLOBAL_OPTIONS}
+
+    admin {$CADDY_SERVER_ADMIN_HOST}:{$CADDY_SERVER_ADMIN_PORT}
+
+    frankenphp {
+        worker "{$APP_PUBLIC_PATH}/frankenphp-worker.php" {$CADDY_SERVER_WORKER_COUNT}
+    }
+}
+
+{$CADDY_SERVER_SERVER_NAME} {
+    log {
+        level {$CADDY_SERVER_LOG_LEVEL}
+
+        # Redact the authorization query parameter that can be set by Mercure...
+        format filter {
+            wrap {$CADDY_SERVER_LOGGER}
+            fields {
+                uri query {
+                    replace authorization REDACTED
+                }
+            }
+        }
+    }
+
+    route {
+        root * "{$APP_PUBLIC_PATH}"
+        encode zstd br gzip
+
+        @redirect_checkout path_regexp checkout /wordpress/checkout/order-received/(\d+)
+        handle @redirect_checkout {
+            redir * /checkout/order/{re.checkout.1}?{query}
+        }
+
+        # WordPress proxy
+        @allow {
+            path /wordpress/wc-auth/*
+            path /wordpress/wp-json/furgonetka/*
+            path /wordpress/wc-api/przelewy24/*
+            path /wordpress/wp-json/wc-analytics/*
+            path /wordpress/wp-json/wc-admin/*
+            path /wordpress/wp-json/wc/v3/*
+            path /wordpress/wp-includes/*
+            path /wordpress/wp-content/*
+            path /wordpress/wp-admin/*
+            path /wordpress/wp-login.php
+            path /wordpress/wp-cron.php
+        }
+
+        @deny {
+            path /wordpress/*
+        }
+
+        reverse_proxy @allow {$WORDPRESS_CONTAINER_URL} {
+            transport http {
+                tls_insecure_skip_verify
+            }
+
+            header_up Host {$WORDPRESS_HOST}
+            header_up X-Forwarded-Host {$WORDPRESS_HOST}
+            header_up X-Forwarded-Proto https
+
+            @hide_error_page status 403 404 500 502 503
+            handle_response @hide_error_page {
+                respond 404 {
+                    body "Not Found"
+                }
+            }
+        }
+
+        respond @deny 404 {
+            body "Not Found"
+        }
+
+        # Mercure configuration is injected here...
+        {$CADDY_SERVER_EXTRA_DIRECTIVES}
+
+        php_server {
+            index frankenphp-worker.php
+            # Required for the public/storage/ directory...
+            resolve_root_symlink
+        }
+    }
+}
