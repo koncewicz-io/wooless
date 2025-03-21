@@ -8,26 +8,23 @@
             <!-- Checkout form -->
             <section class="flex-auto overflow-y-auto px-4 pb-16 pt-12 sm:px-6 sm:pt-16 lg:px-8 lg:pb-24 lg:pt-8">
                 <div class="mx-auto max-w-lg">
-                    <div v-if="$page.props.errors.alert" class="pt-8 grid grid-cols-1 gap-y-2">
-                        <div
-                            v-for="(message, key) in $page.props.errors.alert"
-                            :key="key"
-                            class="rounded-md bg-red-50 p-4"
-                        >
-                            <div class="flex">
-                                <div class="shrink-0">
-                                    <svg class="size-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                                <div class="ml-3">
-                                    <h3 class="text-sm font-medium text-red-800">{{message}}</h3>
+                    <form @submit.prevent="submit">
+                        <div v-if="$page.props.errors.exception" class="pb-8 grid grid-cols-1 gap-y-2">
+                            <div class="rounded-md bg-red-50 p-4"
+                            >
+                                <div class="flex">
+                                    <div class="shrink-0">
+                                        <svg class="size-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3 class="text-sm font-medium text-red-800">{{$page.props.errors.exception}}</h3>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <form @submit.prevent="submit">
                         <div class="mt-2 grid grid-cols-12 gap-x-4 gap-y-6">
                             <div class="col-span-full">
                                 <div class="relative">
@@ -315,9 +312,7 @@ watch(
 );
 
 const submit = () => {
-    form.post(route('cart.update-customer'), {
-        errorBag: 'alert',
-    });
+    form.post(route('cart.update-customer'));
 };
 
 </script>

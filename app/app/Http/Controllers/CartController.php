@@ -106,7 +106,7 @@ use Inertia\Response;
             Promise\Utils::unwrap($promises);
         } catch (\Throwable $e) {
             throw ValidationException::withMessages([
-                'error' => [__('Can not select shipping method.')],
+                'exception' => [__('Can not select shipping method.')],
             ]);
         }
 
@@ -134,7 +134,7 @@ use Inertia\Response;
                 Promise\Utils::unwrap($promises);
             } catch (\Throwable $e) {
                 throw ValidationException::withMessages([
-                    'error' => [__('Can not select shipping method.')],
+                    'exception' => [__('Can not select shipping method.')],
                 ]);
             }
         }
@@ -219,7 +219,7 @@ use Inertia\Response;
             $this->exceptionMessage($e);
         } catch (\Throwable $e) {
             throw ValidationException::withMessages([
-                'error' => [__('Can not update address.')],
+                'exception' => [__('Can not update address.')],
             ]);
         }
 
@@ -237,7 +237,7 @@ use Inertia\Response;
 
         if (!isset($response['code']) || $response['code'] !== 'rest_invalid_param') {
             throw ValidationException::withMessages([
-                'error' => [__('Can not update address.')],
+                'exception' => [__('Can not update address.')],
             ]);
         }
 
@@ -286,7 +286,7 @@ use Inertia\Response;
         }
 
         throw ValidationException::withMessages([
-            'error' => [__('Can not update address.')]
+            'exception' => [__('Can not update address.')]
         ]);
     }
 
