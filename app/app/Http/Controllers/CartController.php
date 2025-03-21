@@ -106,7 +106,7 @@ use Inertia\Response;
             Promise\Utils::unwrap($promises);
         } catch (\Throwable $e) {
             throw ValidationException::withMessages([
-                'exception' => ['Can not select shipping rate.'],
+                'error' => [__('Can not select shipping method.')],
             ]);
         }
 
@@ -134,7 +134,7 @@ use Inertia\Response;
                 Promise\Utils::unwrap($promises);
             } catch (\Throwable $e) {
                 throw ValidationException::withMessages([
-                    'exception' => ['Can not select shipping rate.'],
+                    'error' => [__('Can not select shipping method.')],
                 ]);
             }
         }
@@ -219,7 +219,7 @@ use Inertia\Response;
             $this->exceptionMessage($e);
         } catch (\Throwable $e) {
             throw ValidationException::withMessages([
-                'exception' => [__('Can not update address.')],
+                'error' => [__('Can not update address.')],
             ]);
         }
 
@@ -237,7 +237,7 @@ use Inertia\Response;
 
         if (!isset($response['code']) || $response['code'] !== 'rest_invalid_param') {
             throw ValidationException::withMessages([
-                'exception' => [__('Can not update address.')],
+                'error' => [__('Can not update address.')],
             ]);
         }
 
@@ -286,7 +286,7 @@ use Inertia\Response;
         }
 
         throw ValidationException::withMessages([
-            'exception' => [__('Can not update address.')]
+            'error' => [__('Can not update address.')]
         ]);
     }
 
@@ -314,7 +314,7 @@ use Inertia\Response;
             $responses = Promise\Utils::unwrap($promises);
         } catch (\Throwable $e) {
             throw ValidationException::withMessages([
-                'error' => ['Can not add item to your cart.'],
+                'error' => [__('Can not add item to your cart.')],
             ]);
         }
 
@@ -346,7 +346,7 @@ use Inertia\Response;
             $responses = Promise\Utils::unwrap($promises);
         } catch (\Throwable $e) {
             throw ValidationException::withMessages([
-                'error' => ['Can not remove item from your cart.'],
+                'error' => [__('Can not remove item from your cart.')],
             ]);
         }
 
@@ -379,7 +379,7 @@ use Inertia\Response;
             $responses = Promise\Utils::unwrap($promises);
         } catch (\Throwable $e) {
             throw ValidationException::withMessages([
-                'error' => ['Can not update item from your cart.'],
+                'error' => [__('Can not update item from your cart.')],
             ]);
         }
 

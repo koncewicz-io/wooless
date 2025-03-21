@@ -2,7 +2,7 @@
     <Head :title="i18n.global.t('head_title')" />
 
     <AppLayout :cart="cart" :logged="logged">
-        <Flicking :options="{
+        <Flicking :class="['pt-8']" :options="{
             circular: true,
             preventDefaultOnDrag: true,
             defaultIndex: activeIndex

@@ -72,7 +72,7 @@ use Inertia\Response;
         $rejected = $this->rejected($responses, ['cart']);
         if ($rejected) {
             throw ValidationException::withMessages([
-                'exception' => ['Can not process.'],
+                'error' => [__('Can not process.')],
             ]);
         }
 
@@ -82,13 +82,13 @@ use Inertia\Response;
 
         if (!$cart['items_count']) {
             throw ValidationException::withMessages([
-                'exception' => ['Can not process.'],
+                'error' => [__('Can not process.')],
             ]);
         }
 
         if (!$cart['billing_address']['email']) {
             throw ValidationException::withMessages([
-                'exception' => ['Can not process.'],
+                'error' => [__('Can not process.')],
             ]);
         }
 
@@ -130,7 +130,7 @@ use Inertia\Response;
             $this->processExceptionMessage($e);
         } catch (\Throwable $e) {
             throw ValidationException::withMessages([
-                'exception' => ['Can not process.'],
+                'error' => [__('Can not process.')],
             ]);
         }
 
@@ -148,12 +148,12 @@ use Inertia\Response;
 
         if (!isset($response['code'])) {
             throw ValidationException::withMessages([
-                'exception' => ['Can not process.'],
+                'error' => [__('Can not process.')],
             ]);
         }
 
         throw ValidationException::withMessages([
-            'exception' => [$response['message']],
+            'error' => [$response['message']],
         ]);
     }
 

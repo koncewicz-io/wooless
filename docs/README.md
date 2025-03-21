@@ -13,7 +13,9 @@ cp .env.example .env
 ./up.local.sh
 ```
 
-The project will be available at [https://localhost](https://localhost).
+The project will be available at [https://localhost](https://localhost)
+
+The login page for WordPress will be available at [https://localhost/wordpress/wp-admin/](https://localhost/wordpress/wp-admin/)
 
 ### Run on a remote server
 
@@ -31,4 +33,6 @@ cp .env.example .env
 ./up.local.sh
 ```
 
-The project will be available at `https://your_domain_name`.
+The project will be available at `https://your_domain_name`
+
+The login page for WordPress will be available at `https://your_domain_name/wordpress/wp-admin/`

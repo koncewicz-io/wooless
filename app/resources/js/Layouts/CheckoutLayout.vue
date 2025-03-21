@@ -18,7 +18,7 @@
                             </li>
                         </ol>
                     </nav>
-                    <p class="sm:hidden">Step 2 of 4</p>
+                    <p class="sm:hidden">{{ i18n.global.t('step') }} {{ step() }} of 4</p>
                 </div>
             </div>
         </header>
@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { inject } from "vue";
+import { inject, computed } from "vue";
 import { createI18n } from 'vue-i18n';
 
 import { Link, usePage } from "@inertiajs/vue3";
@@ -47,12 +47,14 @@ const messages = {
         billing_information: 'Billing information',
         shipping: 'Shipping',
         payment: 'Payment',
+        step: 'Step'
     },
     pl: {
         cart: 'Koszyk',
         billing_information: 'Dane odbiorcy',
         shipping: 'Dostawa',
         payment: 'Płatność',
+        step: 'Krok'
     }
 };
 const i18n = createI18n({
@@ -66,5 +68,21 @@ const steps = [
     {name: i18n.global.t('shipping'), href: route('checkout.shipping'), status: route().current('checkout.shipping') ? 'current' : 'upcoming'},
     {name: i18n.global.t('payment'), href: route('checkout.payment'), status: route().current('checkout.payment') ? 'current' : 'upcoming'},
 ]
+
+const step = computed(() => () => {
+    if (route().current('checkout.index')) {
+        return 2;
+    }
+
+    if (route().current('checkout.shipping')) {
+        return 3;
+    }
+
+    if (route().current('checkout.payment')) {
+        return 4;
+    }
+
+    return 0;
+})
 
 </script>

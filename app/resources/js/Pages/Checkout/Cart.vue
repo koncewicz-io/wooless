@@ -147,10 +147,10 @@
 
 <script setup>
 
-import {computed, inject, ref} from "vue";
+import { computed, inject, ref } from "vue";
 import { createI18n } from 'vue-i18n';
 
-import {Link, useForm, usePage} from "@inertiajs/vue3";
+import { Link, useForm, usePage } from "@inertiajs/vue3";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 
 const route = inject('route');

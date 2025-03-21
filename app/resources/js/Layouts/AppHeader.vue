@@ -66,11 +66,11 @@
                                     <MenuItems class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
                                         <div class="py-1">
                                             <MenuItem v-slot="{ active }">
-                                                <Link :href="route('order.index')" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">Orders</Link>
+                                                <Link :href="route('order.index')" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block px-4 py-2 text-sm']">{{ i18n.global.t('orders') }}</Link>
                                             </MenuItem>
                                             <form @submit.prevent="logout">
                                                 <MenuItem v-slot="{ active }">
-                                                    <button type="submit" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block w-full px-4 py-2 text-left text-sm']">Sign out</button>
+                                                    <button type="submit" :class="[active ? 'bg-gray-100 text-gray-900 outline-none' : 'text-gray-700', 'block w-full px-4 py-2 text-left text-sm']">{{ i18n.global.t('logout') }}</button>
                                                 </MenuItem>
                                             </form>
                                         </div>
@@ -134,11 +134,15 @@ const props = defineProps({
 const messages = {
     en: {
         products: 'Products',
-        blog: 'Blog'
+        blog: 'Blog',
+        orders: 'Orders',
+        logout: 'Sign out'
     },
     pl: {
         products: 'Produkty',
-        blog: 'Blog'
+        blog: 'Blog',
+        orders: 'Zamówienia',
+        logout: 'Wyloguj się'
     }
 };
 

@@ -1,12 +1,13 @@
 <template>
-    <Head :title="'Order #' + orderId" />
+    <Head :title="i18n.global.t('head_title') + ' #' + orderId" />
+
     <AppLayout :cart="cart" :logged="logged">
         <div class="bg-white">
             <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
                 <div class="max-w-xl">
-                    <h1 class="text-base font-medium text-indigo-600">Thank you!</h1>
-                    <p class="mt-2 text-4xl font-bold tracking-tight">It’s confirmed!</p>
-                    <p class="mt-2 text-base text-gray-500">Your order #{{orderId}} has been received and will be shipped soon.</p>
+                    <h1 class="text-base font-medium text-indigo-600">{{ i18n.global.t('thank_you') }}</h1>
+                    <p class="mt-2 text-4xl font-bold tracking-tight">{{ i18n.global.t('confirmed') }}</p>
+                    <p class="mt-2 text-base text-gray-500">{{ i18n.global.t('your_order') }} #{{orderId}} {{ i18n.global.t('has_been_received') }}</p>
                 </div>
 
                 <section v-if="!orderRejected" aria-labelledby="order-heading" class="mt-10 border-t border-gray-200">
@@ -31,11 +32,11 @@
                             <div class="mt-6 flex flex-1 items-end">
                                 <dl class="flex divide-x divide-gray-200 text-sm">
                                     <div class="flex pr-4 sm:pr-6">
-                                        <dt class="font-medium text-gray-900">Quantity</dt>
+                                        <dt class="font-medium text-gray-900">{{ i18n.global.t('quantity') }}</dt>
                                         <dd class="ml-2 text-gray-700">{{ product.quantity }}</dd>
                                     </div>
                                     <div class="flex pl-4 sm:pl-6">
-                                        <dt class="font-medium text-gray-900">Price</dt>
+                                        <dt class="font-medium text-gray-900">{{ i18n.global.t('price') }}</dt>
                                         <dd class="ml-2 text-gray-700"><span v-if="product.prices.currency_prefix" v-html="product.prices.currency_prefix"></span>{{ product.formatted_prices.price }}<span v-if="product.prices.currency_suffix" v-html="product.prices.currency_suffix"></span></dd>
                                     </div>
                                 </dl>
@@ -49,7 +50,7 @@
                         <h4 class="sr-only">Addresses</h4>
                         <dl class="grid grid-cols-2 gap-x-6 py-10 text-sm">
                             <div>
-                                <dt class="font-medium text-gray-900">Shipping address</dt>
+                                <dt class="font-medium text-gray-900">{{ i18n.global.t('shipping_address') }}</dt>
                                 <dd class="mt-2 text-gray-700">
                                     <address class="not-italic">
                                         <span class="block">{{order.shipping_address.first_name}} {{order.shipping_address.last_name}}</span>
@@ -60,7 +61,7 @@
                                 </dd>
                             </div>
                             <div>
-                                <dt class="font-medium text-gray-900">Billing address</dt>
+                                <dt class="font-medium text-gray-900">{{ i18n.global.t('billing_address') }}</dt>
                                 <dd class="mt-2 text-gray-700">
                                     <address class="not-italic">
                                         <span class="block">{{order.billing_address.first_name}} {{order.billing_address.last_name}}</span>
@@ -87,11 +88,9 @@
                             </div>
                         </dl>
 
-                        <h3 class="sr-only">Summary</h3>
-
                         <dl class="space-y-6 border-t border-gray-200 pt-10 text-sm">
                             <div class="flex justify-between">
-                                <dt class="font-medium text-gray-900">Subtotal</dt>
+                                <dt class="font-medium text-gray-900">{{ i18n.global.t('subtotal') }}</dt>
                                 <dd class="text-gray-700"><span v-if="order.totals.currency_prefix" v-html="order.totals.currency_prefix"></span>{{order.formatted_totals.total_items}}<span v-if="order.totals.currency_suffix" v-html="order.totals.currency_suffix"></span></dd>
                             </div>
                             <div v-if="false" class="flex justify-between">
@@ -102,11 +101,11 @@
                                 <dd class="text-gray-700">-$18.00 (50%)</dd>
                             </div>
                             <div class="flex justify-between">
-                                <dt class="font-medium text-gray-900">Shipping</dt>
+                                <dt class="font-medium text-gray-900">{{ i18n.global.t('shipping') }}</dt>
                                 <dd class="text-gray-700"><span v-if="order.totals.currency_prefix" v-html="order.totals.currency_prefix"></span>{{order.formatted_totals.total_shipping}}<span v-if="order.totals.currency_suffix" v-html="order.totals.currency_suffix"></span></dd>
                             </div>
                             <div class="flex justify-between">
-                                <dt class="font-medium text-gray-900">Total</dt>
+                                <dt class="font-medium text-gray-900">{{ i18n.global.t('total') }}</dt>
                                 <dd class="text-gray-900"><span v-if="order.totals.currency_prefix" v-html="order.totals.currency_prefix"></span>{{order.formatted_totals.total_price}}<span v-if="order.totals.currency_suffix" v-html="order.totals.currency_suffix"></span></dd>
                             </div>
                         </dl>
@@ -119,7 +118,9 @@
 
 <script setup>
 
-import { Head, useForm } from "@inertiajs/vue3";
+import { createI18n } from 'vue-i18n';
+
+import { Head, usePage } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 
 const props = defineProps({
@@ -144,6 +145,41 @@ const props = defineProps({
         type: String,
         default: null
     }
+});
+
+const messages = {
+    en: {
+        head_title: 'Order',
+        thank_you: 'Thank you!',
+        confirmed: 'It’s confirmed!',
+        your_order: 'Your order',
+        has_been_received: 'has been received and will be shipped soon.',
+        quantity: 'Quantity',
+        price: 'Price',
+        shipping_address: 'Shipping address',
+        billing_address: 'Billing address',
+        subtotal: 'Subtotal',
+        shipping: 'Shipping',
+        total: 'Total'
+    },
+    pl: {
+        head_title: 'Zamówienie',
+        thank_you: 'Dziękujemy!',
+        confirmed: 'Zamówienie złożone!',
+        your_order: 'Twoje zamówienie',
+        has_been_received: 'zostało otrzymane i wkrótce zostanie wysłane.',
+        quantity: 'Ilość',
+        price: 'Cena',
+        shipping_address: 'Adres wysyłkowy',
+        billing_address: 'Adres rozliczeniowy',
+        subtotal: 'Wartość',
+        shipping: 'Dostawa',
+        total: 'Razem'
+    }
+};
+const i18n = createI18n({
+    locale: usePage().props.locale,
+    messages
 });
 
 </script>

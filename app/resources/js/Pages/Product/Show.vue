@@ -3,7 +3,7 @@
 
     <AppLayout :cart="cart" :product="product" :logged="logged">
 
-        <div class="lg:grid lg:auto-rows-min lg:grid-cols-12 lg:gap-x-8">
+        <div class="pt-8 lg:grid lg:auto-rows-min lg:grid-cols-12 lg:gap-x-8">
             <div class="lg:col-span-5 lg:col-start-8">
                 <div class="flex justify-between">
                     <h1 class="text-xl font-medium text-gray-900">{{ product.name }}</h1>
