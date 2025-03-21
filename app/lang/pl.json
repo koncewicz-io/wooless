@@ -2,5 +2,10 @@
     "The provided data is not valid.": "Podane dane są nieprawidłowe.",
     "Can not update address.": "Nie można zaktualizować adresu.",
     "Category": "Kategorie",
-    "E-mail or password are incorrect.": "Podany adres e-mail lub hasło są nieprawidłowe."
+    "E-mail or password are incorrect.": "Podany adres e-mail lub hasło są nieprawidłowe.",
+    "Can not remove item from your cart.": "Nie można usunąć produktu z koszyka.",
+    "Can not update item from your cart.": "Nie można zaktualizować produktu w koszyku.",
+    "Can not add item to your cart.": "Nie można dodać produktu do koszyka.",
+    "Can not select shipping method.": "Nie można wybrać metody wysyłki.",
+    "Can not process.": "Nie można przetworzyć."
 }
