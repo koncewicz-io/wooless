@@ -7,6 +7,8 @@ services:
       #- '8000:8000'
     volumes:
       - ./../app:/var/www/
+      - caddy_data:/data
+      - caddy_config:/config
     networks:
       - wooless
   wooless-wordpress-app:
@@ -32,6 +34,9 @@ services:
       MYSQL_ROOT_PASSWORD: secret
     networks:
       - wooless
+volumes:
+  caddy_data:
+  caddy_config:
 networks:
   wooless:
     external: true
