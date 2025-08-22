@@ -7,5 +7,10 @@
     "Can not update item from your cart.": "Nie można zaktualizować produktu w koszyku.",
     "Can not add item to your cart.": "Nie można dodać produktu do koszyka.",
     "Can not select shipping method.": "Nie można wybrać metody wysyłki.",
-    "Can not process.": "Nie można przetworzyć."
+    "Can not process.": "Nie można przetworzyć.",
+    "Can not create account.": "Nie można utworzyć konta.",
+    "An account with this email already exists. Please log in or use a different email address.": "Konto o tym adresie e-mail już istnieje. Zaloguj się lub użyj innego adresu e-mail.",
+    "Please provide a valid email address.": "Podaj prawidłowy adres e-mail.",
+    "Please provide a valid account username.": "Proszę podać prawidłową nazwę użytkownika konta.",
+    "An account is already registered with that username. Please choose another.": "Konto z tą nazwą użytkownika jest już zarejestrowane. Wybierz inną."
 }

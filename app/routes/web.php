@@ -9,6 +9,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
@@ -38,5 +39,8 @@ Route::get('/account', [AccountController::class, 'index'])->name('account.index
 
 Route::get('/login', [LoginController::class, 'index'])->name('login.index');
 Route::post('/login', [LoginController::class, 'store'])->name('login.store');
+
+//Route::get('/register', [RegisterController::class, 'index'])->name('register.index');
+//Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
 
 Route::post('/logout', [LogoutController::class, 'store'])->name('logout.store');
