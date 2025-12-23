@@ -58,6 +58,9 @@ use WC_P24\Models\Database\Reference;
                         <?= $item->get_info() ?>
                     <?php else: ?>
                         <small>✱✱✱✱ ✱✱✱✱ ✱✱✱✱</small> <?= $item->get_info() ?>
+                        <?php if ($item->has_subscriptions()): ?>
+                            <p class="shop_table__cell-description"><small><?= __('This payment has a subscription attached to it', 'woocommerce-p24') ?></small></p>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </td>
 
@@ -66,18 +69,12 @@ use WC_P24\Models\Database\Reference;
                 </td>
 
                 <td data-title="<?= __('Actions', 'woocommerce-p24') ?>">
-                    <button data-delete data-id="<?= $item->get_id() ?>" data-nonce="<?= $nonce ?>"
-                            class="woocommerce-button wp-element-button button"><?= _x('Remove', 'one click', 'woocommerce-p24') ?></button>
+                    <?php if (!$is_blik) : ?>
+                        <button data-delete data-id="<?= $item->get_id() ?>" data-nonce="<?= $nonce ?>"
+                                class="woocommerce-button wp-element-button button"><?= _x('Remove', 'one click', 'woocommerce-p24') ?></button>
+                    <?php endif; ?>
                 </td>
             </tr>
-
-            <?php if ($item->has_subscriptions()): ?>
-                <tr class="shop_table__cell-description">
-                    <td colspan="4">
-                        <small><?= __('This payment has a subscription attached to it','woocommerce-p24') ?></small>
-                    </td>
-                </tr>
-            <?php endif; ?>
 
         <?php endforeach; ?>
         </tbody>

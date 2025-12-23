@@ -23,6 +23,31 @@ use Inertia\Response;
         ]);
     }
 
+    public function state()
+    {
+        $promises = [
+            'auth' => $this->client->postAsync(
+                uri: 'jwt-auth/v1/token/validate',
+                options: [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $this->auth->token()
+                    ]
+                ]
+            ),
+        ];
+
+        $responses = Promise\Utils::settle($promises)->wait();
+
+        $logged = false;
+        if ($responses['auth']['state'] === 'fulfilled') {
+            $logged = true;
+        }
+
+        return response()->json([
+            'logged' => $logged
+        ]);
+    }
+
     public function index(Request $request): Response|RedirectResponse
     {
         $promises = [

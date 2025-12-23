@@ -110,24 +110,6 @@
                         <img :src="post.imageSrc" class="aspect-square w-full rounded-lg bg-gray-100 object-cover" />
                     </div>
                 </div>
-
-                <div class="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:gap-x-8 xl:grid-cols-3">
-                    <Link :href="route('product.show', product.id)" v-for="product in products" :key="product.id" class="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white">
-                        <img :src="product.images[0]?.src" :alt="product.imageAlt" class="aspect-[3/4] bg-gray-200 object-cover group-hover:opacity-75 sm:h-96" />
-                        <div class="flex flex-1 flex-col space-y-2 p-4">
-                            <h3 class="text-sm font-medium text-gray-900">
-                                <a :href="product.href">
-                                    <span aria-hidden="true" class="absolute inset-0" />
-                                    {{ product.name }}
-                                </a>
-                            </h3>
-                            <div class="flex flex-1 flex-col justify-end">
-                                <p class="text-sm italic text-gray-500">{{ product.options }}</p>
-                                <p class="text-base font-medium text-gray-900">{{ product.price }}</p>
-                            </div>
-                        </div>
-                    </Link>
-                </div>
             </section>
         </div>
     </AppLayout>

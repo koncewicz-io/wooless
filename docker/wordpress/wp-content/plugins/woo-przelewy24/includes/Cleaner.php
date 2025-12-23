@@ -37,7 +37,7 @@ class Cleaner
 
     public function add_cleaner_page()
     {
-        add_submenu_page(null, __('Przelewy24 cleaner', 'woocommerce-p24'), '', 'manage_options', self::CLEANER_PAGE_ID, [$this, 'render']);
+        add_submenu_page('tools.php', __('Przelewy24 cleaner', 'woocommerce-p24'), '', 'manage_options', self::CLEANER_PAGE_ID, [$this, 'render']);
     }
 
     protected function settings(): array

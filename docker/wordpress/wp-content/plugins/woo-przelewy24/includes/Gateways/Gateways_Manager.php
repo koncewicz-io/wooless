@@ -10,7 +10,13 @@ use Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry;
 use Exception;
 use WC_P24\Config;
 use WC_P24\Core;
+use WC_P24\Gateways\Apple_Pay\Apple_Pay_Block;
+use WC_P24\Gateways\Blik\Blik_Block;
+use WC_P24\Gateways\Card\Card_Block;
+use WC_P24\Gateways\Google_Pay\Google_Pay_Block;
+use WC_P24\Gateways\Online_Payments\Online_Payments_Block;
 use WC_P24\Helper;
+use WC_P24\Installments\Installments;
 use WC_P24\Utilities\Payment_Methods;
 
 class Gateways_Manager
@@ -20,24 +26,8 @@ class Gateways_Manager
 
     public function __construct()
     {
-        $main_gateway = new Online_Payments\Gateway();
-
-        self::$gateways = [
-            Core::MAIN_METHOD => $main_gateway,
-            Core::BLIK_IN_SHOP_METHOD => new Blik\Gateway(),
-            Core::CARD_IN_SHOP_METHOD => new Card\Gateway(),
-            Core::GOOGLE_PAY_IN_SHOP_METHOD => new Google_Pay\Gateway(),
-            Core::APPLE_PAY_IN_SHOP_METHOD => new Apple_Pay\Gateway()
-        ];
-
-
-        foreach ($main_gateway->get_featured_methods() as $gateway) {
-            if ($gateway['featured']) {
-                self::$extra_gateways[] = new Virtual_Gateway\Gateway($gateway['id'], $gateway['name'], $gateway['mobileImgUrl']);
-            }
-        }
-
         new General_Webhooks();
+        new Fee_Manager();
 
         add_filter('woocommerce_payment_gateways', [$this, 'add_gateways']);
         add_action('wc_payment_gateways_initialized', [$this, 'reorder_gateways']);
@@ -59,10 +49,37 @@ class Gateways_Manager
 
     public function add_gateways(array $gateways): array
     {
+        $main_gateway = new Online_Payments\Gateway();
+
+        self::$gateways = [
+            Core::MAIN_METHOD => $main_gateway,
+            Core::BLIK_IN_SHOP_METHOD => new Blik\Gateway(),
+            Core::CARD_IN_SHOP_METHOD => new Card\Gateway(),
+            Core::GOOGLE_PAY_IN_SHOP_METHOD => new Google_Pay\Gateway(),
+            Core::APPLE_PAY_IN_SHOP_METHOD => new Apple_Pay\Gateway()
+        ];
+
+        foreach ($main_gateway->get_featured_methods() as $gateway) {
+            if ($gateway['featured']) {
+                self::$extra_gateways[] = new Virtual_Gateway\Gateway($gateway['id'], $gateway['name'], $gateway['mobileImgUrl']);
+            }
+        }
+
+       Installments::add_as_gateway();
+
         $gateways = array_merge($gateways, self::$gateways);
 
-        if (!is_admin()) {
+        if (!(isset($_GET['tab']) && $_GET['tab'] == 'checkout')) {
             $gateways = array_merge(self::$extra_gateways, $gateways);
+        }
+
+        // Enabling must be here not in , because is need to get translations
+        if (is_admin()) {
+            foreach (self::$gateways as $gateway) {
+                if (in_array($gateway->id, [Core::MAIN_METHOD, Core::CARD_IN_SHOP_METHOD])) {
+                    $gateway->enable_and_set_defaults();
+                }
+            }
         }
 
         return $gateways;
@@ -133,7 +150,9 @@ class Gateways_Manager
 
     public static function get_available_methods(int $total = 0): array
     {
-        $total = isset(WC()->cart) ? WC()->cart->total : $total;
+        if ($total === 0) {
+            $total = isset(WC()->cart) ? WC()->cart->total : $total;
+        }
 
         $available_methods = Payment_Methods::get_payment_methods(Helper::to_lowest_unit($total), Config::get_instance()->get_currency());
 
@@ -144,9 +163,9 @@ class Gateways_Manager
 
     public static function get_method_id_matching_group(array $group, int $total): ?int
     {
-        $available = Gateways_Manager::get_available_methods($total);
+        $available_methods = self::get_available_methods($total);
 
-        $payments = array_values(array_filter($available, function ($payment) use ($group) {
+        $payments = array_values(array_filter($available_methods, function ($payment) use ($group) {
             return in_array($payment['id'], $group);
         }));
 
@@ -160,11 +179,11 @@ class Gateways_Manager
     public function add_payment_blocks(): void
     {
         add_action('woocommerce_blocks_payment_method_type_registration', function (PaymentMethodRegistry $payment_method_registry) {
-            foreach (self::$gateways as $gateway) {
-                if (method_exists($gateway, 'block_support')) {
-                    $payment_method_registry->register($gateway->block_support());
-                }
-            }
+            $payment_method_registry->register(new Online_Payments_Block());
+            $payment_method_registry->register(new Card_Block());
+            $payment_method_registry->register(new Blik_Block());
+            $payment_method_registry->register(new Apple_Pay_Block());
+            $payment_method_registry->register(new Google_Pay_Block());
         });
     }
 

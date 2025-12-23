@@ -12,7 +12,9 @@ use WC_P24\API\Resources\Paywall_Resource;
 use WC_P24\API\Resources\Resource;
 use WC_P24\API\Resources\Transaction_Resource;
 use WC_P24\Config;
+use WC_P24\Core;
 use WC_P24\Gateways\Card\Card_Webhooks;
+use WC_P24\Gateways\Gateways_Manager;
 use WC_P24\Gateways\General_Webhooks;
 use WC_P24\Helper;
 use WC_P24\Models\Database\Reference;
@@ -20,12 +22,10 @@ use WC_P24\Models\Simple\Card_Simple;
 use WC_P24\Models\Simple\Notification;
 use WC_P24\Multicurrency\Multicurrency;
 use WC_P24\Utilities\Encryption;
-use WC_P24\Utilities\Logger;
 use WC_P24\Utilities\Payment_Methods;
 use WC_P24\Utilities\User_Data;
 
 class Transaction
-
 {
     const TOKEN_KEY = '_p24_token';
     const SESSION_ID_KEY = '_p24_session_id';
@@ -34,10 +34,10 @@ class Transaction
     const CARD_STANDARD = 'standard';
     const CARD_INITIAL = 'initial';
     const CARD_ONE_CLICK = '1click';
+    const CARD_C2P = 'c2p';
     const CARD_RECURRING = 'recurring';
     const ONE_CLICK_CARD = 'one-click-card';
     const ONE_CLICK_BLIK = 'one-click-blik';
-
     const APPLE_PAY = 'applepay';
     const GOOGLE_PAY = 'googlepay';
 
@@ -55,18 +55,15 @@ class Transaction
     private ?Card_Simple $card = null;
     private ?Reference $reference = null;
     private string $card_payment_type = self::CARD_STANDARD;
-
     private bool $save_blik = false;
     private ?string $one_click = null;
     private ?string $payload = null;
     private ?string $payload_type = null;
-
     private bool $accept_rules = false;
 
     public function __construct($order_id, int $method = Payment_Methods::PAYWALL_PAYMENT, bool $accept_rules = false)
     {
         $this->order = wc_get_order($order_id);
-
         if (!$this->order) {
             throw new \Exception('Order does exist');
         }
@@ -75,13 +72,11 @@ class Transaction
         $this->client = new Transaction_Resource();
         $this->config = Config::get_instance();
         $this->currency = $this->order->get_currency();
-
         $this->session_id = $this->order->get_meta(self::SESSION_ID_KEY);
         $this->trace_id = $this->order->get_meta(self::TRACE_ID_KEY);
         $this->order_id = (int)$this->order->get_meta(self::ORDER_ID_KEY, true);
         $this->token = $this->order->get_meta(self::TOKEN_KEY, true);
         $this->accept_rules = $accept_rules;
-
         $this->amount = Helper::to_lowest_unit($this->order->get_total());
     }
 
@@ -125,7 +120,37 @@ class Transaction
     public function get_session_id(): ?string
     {
         if (!$this->session_id) {
-            $this->set_session_id(Encryption::generate_session_id($this->order->get_id()));
+            $parts = [Helper::get_transaction_prefix()];
+
+            if ($this->method == Payment_Methods::PAYWALL_PAYMENT) {
+                $parts[1] = 'pg';
+            } else {
+                $parts[1] = "dirmet({$this->method})";
+            }
+
+            if ($this->method == Payment_Methods::BLIK_PAYMENT) {
+                $parts[2] = 'b0';
+                if ($this->one_click === self::ONE_CLICK_BLIK) {
+                    $parts[2] = 'b0oc';
+                }
+            } elseif (!empty($this->card)) {
+                $parts[2] = 'cc';
+                $gateway = Gateways_Manager::$gateways[Core::CARD_IN_SHOP_METHOD] ?? null;
+                if ($this->one_click === self::ONE_CLICK_CARD) {
+                    $parts[2] = 'ccoc';
+                } elseif ($this->card_payment_type == self::CARD_RECURRING) {
+                    $parts[2] = 'ccrec';
+                } elseif ($gateway && $gateway->enabled && $gateway->click_to_pay_enabled()) {
+                    $parts[2] = 'ccc2p';
+                }
+            } elseif (!empty($this->payload)) {
+                if ($this->payload_type == self::GOOGLE_PAY) {
+                    $parts[2] = 'gp';
+                }
+            }
+
+            $parts[] = substr(Encryption::generate_session_id($this->order->get_id()), 0, 32);
+            $this->set_session_id(implode('_', $parts));
         }
 
         return $this->session_id;
@@ -165,15 +190,13 @@ class Transaction
         $currency = $this->currency;
         $merchant_id = $this->config->get_merchant_id();
 
-        $signature = Encryption::generate_signature([
+        return Encryption::generate_signature([
             'sessionId' => $session_id,
             'merchantId' => $merchant_id,
             'amount' => $amount,
             'currency' => $currency,
             'crc' => $this->config->get_crc_key()
         ]);
-
-        return $signature;
     }
 
     public function set_additional_data(&$data)
@@ -184,6 +207,18 @@ class Transaction
                 'userAgent' => User_Data::get_user_agent()
             ]
         ];
+    }
+
+    private function get_transaction_email()
+    {
+        if (is_user_logged_in()) {
+            $user = wp_get_current_user();
+            if ($user && $user->user_email) {
+                return $user->user_email;
+            }
+        }
+
+        return $this->order->get_billing_email();
     }
 
     public function get_transaction_data(): array
@@ -197,7 +232,7 @@ class Transaction
             'amount' => $this->amount,
             'currency' => $this->currency,
             'description' => sprintf(__('Order no.: %s', 'woocommerce-p24'), $this->order->get_order_number()),
-            'email' => $this->order->get_billing_email(),
+            'email' => $this->get_transaction_email(),
             'country' => $this->order->get_billing_country(),
             'language' => Helper::get_language(),
             'urlReturn' => $this->return_url,
@@ -225,12 +260,10 @@ class Transaction
                 'transactionType' => $this->card_payment_type,
             ];
 
-            // one click payment
             if (in_array($this->card_payment_type, [self::CARD_ONE_CLICK])) {
                 $data['methodRefId'] = $this->card->get_ref_id();
             }
 
-            // save one click
             if (in_array($this->card_payment_type, [self::CARD_INITIAL])) {
                 $save_card_url = Card_Webhooks::get_notification_card_url($this->order->get_id());
                 $data['urlNotify'] = $save_card_url;
@@ -238,7 +271,6 @@ class Transaction
             }
         }
 
-        // Google Pay and Apple Pay
         if ($this->payload && $this->payload_type) {
             $data['cardData'] = [
                 'means' => [
@@ -251,7 +283,6 @@ class Transaction
             ];
         }
 
-        // BLIK add IP and user agent to transaction
         if ($this->method == Payment_Methods::BLIK_PAYMENT) {
             $this->set_additional_data($data);
         }
@@ -260,9 +291,16 @@ class Transaction
             $data['referenceRegister'] = true;
         }
 
-        // BLIK one click
         if ($this->one_click === self::ONE_CLICK_BLIK && !empty($this->reference)) {
             $data['methodRefId'] = $this->reference->get_ref_id();
+        }
+
+        $settings = get_option('woocommerce_p24_settings', []);
+        $waitForResultEnabled = isset($settings['p24_wait_for_result']) && $settings['p24_wait_for_result'] === 'yes';
+        $methodGroup = Payment_Methods::get_group_name($this->method);
+
+        if ($waitForResultEnabled && !in_array($methodGroup, ['Installments', 'TraditionalTransfer'], true)) {
+            $data['waitForResult'] = 1;
         }
 
         return $data;
@@ -297,7 +335,6 @@ class Transaction
     public function get_paywall_url(): string
     {
         $client = new Paywall_Resource();
-
         return $client->get_paywall_url($this->get_token());
     }
 
@@ -312,6 +349,7 @@ class Transaction
     {
         $url = Encryption::encrypt($this->order->get_checkout_order_received_url());
         $this->return_url = General_Webhooks::get_return_url($url);
+        $this->order->update_meta_data('_p24_return_url', $this->return_url);
         $this->reset_session();
         $data = $this->get_transaction_data();
 
@@ -324,7 +362,7 @@ class Transaction
         $this->token = $response['data']['token'];
         $this->order->update_meta_data(self::SESSION_ID_KEY, $this->session_id);
         $this->order->update_meta_data(self::TOKEN_KEY, $this->token);
-        $this->order->add_order_note(sprintf(__('Register transaction<br/><strong>Session ID</strong>: %s <br/><strong>Token</strong>: %s', 'woocommerce-p24'), $this->session_id, $this->token));
+        $this->order->add_order_note(sprintf(__('Register transaction<br/><strong>Session ID</strong>: %1$s <br/><strong>Token</strong>: %2$s', 'woocommerce-p24'), $this->session_id, $this->token));
 
         if ($this->card && $this->card_payment_type === self::CARD_INITIAL) {
             $this->order->update_meta_data(self::TRACE_ID_KEY, $this->token);
@@ -336,7 +374,6 @@ class Transaction
     private function verify_sign(Notification $notification): bool
     {
         $config = Config::get_instance();
-
         $generated = Encryption::generate_signature([
             'merchantId' => $config->get_merchant_id(),
             'posId' => $config->get_merchant_id(),
@@ -349,26 +386,21 @@ class Transaction
             'statement' => $notification->statement,
             'crc' => $config->get_crc_key()
         ]);
-
         return $generated === $notification->sign;
     }
 
     public function verify(Notification $notification): void
     {
         if (in_array($this->order->get_status(), ['completed', 'processing'])) exit;
-
         if ($notification->session_id !== $this->get_session_id()) {
             throw new \Exception('Session ID mismatch.');
         }
-
         if (!$notification->order_id) {
             throw new \Exception('Order ID not provided.');
         }
 
         Multicurrency::setup($notification->currency);
-
         $this->save_order_id($notification->order_id);
-
         $response = $this->client->verify_transaction($this->get_verification_data());
 
         if (!empty($response['data']['status']) && $response['data']['status'] == 'success') {
@@ -385,23 +417,16 @@ class Transaction
     {
         $this->order_id = $order_id;
         $this->order->update_meta_data(self::ORDER_ID_KEY, $this->order_id);
-
         $this->order->save();
     }
 
     public function charge_blik_by_code(string $code): void
     {
         $client = new Blik_Resource();
-
-        $response = $client->charge_by_code([
-            'token' => $this->get_token(),
-            'blikCode' => $code
-        ]);
-
+        $response = $client->charge_by_code(['token' => $this->get_token(), 'blikCode' => $code]);
         if (empty($response['data']['orderId'])) {
             throw new \Exception('BLIK charge by code failed');
         }
-
         $this->save_order_id($response['data']['orderId']);
     }
 
@@ -409,30 +434,21 @@ class Transaction
     {
         if ($this->one_click === self::ONE_CLICK_BLIK) {
             $client = new Blik_Resource();
-
-            $response = $client->charge_by_alias([
-                'token' => $this->get_token(),
-                'type' => 'alias'
-            ]);
-
+            $response = $client->charge_by_alias(['token' => $this->get_token(), 'type' => 'alias']);
             if (isset($response['code']) && $response['code'] == 51) {
-                if(empty($response['error']['alternativeKeys'])) {
+                if (empty($response['error']['alternativeKeys'])) {
                     throw new \Exception('BLIK charge by alias failed');
                 }
-
                 [$alt] = $response['error']['alternativeKeys'];
-
                 $response = $client->charge_by_alias([
                     'token' => $this->get_token(),
                     'type' => 'alternativeKey',
                     'alternativeKey' => $alt['alias']
                 ]);
             }
-
             if (empty($response['data']['orderId'])) {
                 throw new \Exception('BLIK charge by alias failed');
             }
-
             $this->save_order_id($response['data']['orderId']);
         }
     }

@@ -77,4 +77,11 @@ class Helper
 
         return preg_replace('/^.{' . $hidden . '}/', '*****', $value);
     }
+
+    public static function get_transaction_prefix(): string {
+        $woo_version = defined('WC_VERSION') ? WC_VERSION : '';
+        $plugin_version = Core::$version;
+
+        return "wpp24{{$woo_version}:{$plugin_version}}";
+    }
 }

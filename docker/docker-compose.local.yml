@@ -1,7 +1,13 @@
 services:
+
   wooless-app:
     container_name: wooless-app
     image: wooless-app
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     ports:
       - '443:443'
       #- '8000:8000'
@@ -11,9 +17,15 @@ services:
       - caddy_config:/config
     networks:
       - wooless
+
   wooless-wordpress-app:
-    image: wooless-wordpress-app
     container_name: wooless-wordpress-app
+    image: wooless-wordpress-app
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     environment:
       WORDPRESS_DB_HOST: wooless-wordpress-db
       WORDPRESS_DB_USER: wordpress
@@ -21,12 +33,24 @@ services:
       WORDPRESS_DB_NAME: wordpress
       JWT_AUTH_SECRET_KEY: JWT_AUTH_SECRET_KEY
     depends_on:
-      - wooless-wordpress-db
+      wooless-wordpress-db:
+        condition: service_healthy
     networks:
       - wooless
+
   wooless-wordpress-db:
-    image: mysql:5.7
     container_name: wooless-wordpress-db
+    image: mysql:5.7
+    healthcheck:
+      test: mysqladmin ping -p$$MYSQL_ROOT_PASSWORD -h 127.0.0.1
+      interval: 5s
+      timeout: 120s
+      retries: 120
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     environment:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
@@ -34,9 +58,11 @@ services:
       MYSQL_ROOT_PASSWORD: secret
     networks:
       - wooless
+
 volumes:
   caddy_data:
   caddy_config:
+
 networks:
   wooless:
     external: true

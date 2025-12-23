@@ -52,6 +52,14 @@ class Card_Webhooks extends Webhook
                     break;
             }
 
+            $order = $this->get_order();
+            $redirect = $order->get_meta('_p24_return_url', true);
+            if (empty($redirect)) {
+                $redirect = $order->get_checkout_order_received_url();
+            }
+
+            $result['redirect'] = $redirect;
+
             wp_send_json_success($result);
         } catch (\Exception $e) {
             wp_send_json_error(['error' => true, 'message' => $e->getMessage()], 422);
@@ -60,6 +68,7 @@ class Card_Webhooks extends Webhook
 
         exit;
     }
+
 
     private function notification(): void
     {
@@ -106,8 +115,18 @@ class Card_Webhooks extends Webhook
         $payment_details = $this->get_payment_details();
         $order = $this->get_order();
 
-        return $this->gateway->payment($order, $payment_details);
+        $result = $this->gateway->payment($order, $payment_details);
+
+        $redirect = $order->get_meta('_p24_return_url', true);
+        if (empty($redirect)) {
+            $redirect = $order->get_checkout_order_received_url();
+        }
+
+        $result['redirect'] = $redirect;
+
+        return $result;
     }
+
 
     public static function get_process_card_url(): string
     {

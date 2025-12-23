@@ -25,7 +25,7 @@ class Sanitizer
 
     public static function sanitize_token(string $value): string
     {
-        return preg_replace('/[^A-Za-z0-9\-]/', '', trim(strtolower(strip_tags($value))));
+        return preg_replace('/[^A-Za-z0-9\-]/', '', trim(strip_tags($value)));
     }
 
     public static function sanitize_string(string $value): string

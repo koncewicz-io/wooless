@@ -8,19 +8,13 @@ if (!defined('ABSPATH')) {
 
 use Automattic\WooCommerce\StoreApi\Payments\PaymentContext;
 use Automattic\WooCommerce\StoreApi\Payments\PaymentResult;
-use DateTimeInterface;
-use WC_Order;
-use WC_P24\API\Resources\Blik_Resource;
 use WC_P24\Core;
 use WC_P24\Gateways\Fee;
 use WC_P24\Gateways\Payment_Helpers;
 use WC_P24\Gateways\Settings_Helper;
-use WC_P24\Models\Database\Reference;
-use WC_P24\Models\Simple\Reference_Notification;
-use WC_P24\Models\Simple\Reference_Simple;
 use WC_P24\Models\Transaction;
+use WC_P24\OneClick\One_Clicks;
 use WC_P24\Utilities\Base_Gateway_Block;
-use WC_P24\Utilities\Logger;
 use WC_P24\Utilities\Payment_Methods;
 use WC_P24\Utilities\Sanitizer;
 use WC_P24\Utilities\Validator;
@@ -39,36 +33,29 @@ class Gateway extends WC_Payment_Gateway
     {
         $this->id = Core::BLIK_IN_SHOP_METHOD;
 
-        $this->icon = apply_filters('woocommerce_gateway_icon', WC_P24_PLUGIN_URL . '/assets/blik.svg');
+        $this->icon = apply_filters('woocommerce_gateway_icon', WC_P24_PLUGIN_URL . 'assets/blik.svg');
         $this->method = Payment_Methods::BLIK_PAYMENT;
-
-        $this->method_title = __('Przelewy24 - BLIK', 'woocommerce-p24');
-        $this->method_description = sprintf(__('BLIK payment option on the shop <br /><a href="%s">General configuration</a>', 'woocommerce-p24'), Core::get_settings_url());
-
-        $this->title = $this->get_option('title') ?: __('BLIK', 'woocommerce-p24');
         $this->description = $this->get_option('description');
         $this->supports = ['products', 'refunds'];
 
-        $this->init_form_fields();
+        $this->method_title = __('Przelewy24 - BLIK', 'woocommerce-p24');
+        /* translators: %s: URL to the general configuration page */
+        $this->method_description = sprintf(__('BLIK payment option on the shop <br /><a href="%s">General configuration</a>', 'woocommerce-p24'), Core::get_settings_url());
+        $this->title = $this->get_option('title') ?: __('BLIK', 'woocommerce-p24');
 
         new Fee($this);
         $this->webhooks = new Blik_Webhooks($this);
 
         add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
         add_action('woocommerce_rest_checkout_process_payment_with_context', [$this, 'process_payment_rest'], 10, 2);
-        add_action('przelewy24_after_verify_transaction', [$this, 'pre_save_blik_reference'], 10, 1);
 
+        $this->init_form_fields();
         $this->init_legacy();
     }
 
     public function one_click_enabled(): bool
     {
         return $this->get_option('one_click_enabled') == 'yes';
-    }
-
-    public function block_support(): Base_Gateway_Block
-    {
-        return new Blik_Block($this);
     }
 
     public function init_form_fields(): void
@@ -78,7 +65,7 @@ class Gateway extends WC_Payment_Gateway
                 'type' => 'checkbox',
                 'label' => __('Enable Przelewy24 - BLIK', 'woocommerce-p24'),
                 'custom_attributes' => ['data-enabled' => true],
-                'info' => '<svg class="p24-ui-icon" style="width:22px;"><use href="#p24-icon-info"></use></svg> '.__('<h3>BLIK Level 0 Payment</h3>Enabling this option will allow the payer to enter the BLIK code directly on your website. (Available for a customer after their first payment, with the agreement checked).<br/><strong>Before turning this option on, please contact P24 to enable adequate services on your account for on-site Blik payments.</strong><br/><br/><em>Example view for the buyer:</em><br/><img src="https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-wtyczki/woocommerce/helper/en_blik_lvl0.png" alt="BLIK Level 0 Payment" style="max-width: 400px">', 'woocommerce-p24'),
+                'info' => '<svg class="p24-ui-icon" style="width:22px;"><use href="#p24-icon-info"></use></svg> ' . __('<h3>BLIK Level 0 Payment</h3>Enabling this option will allow the payer to enter the BLIK code directly on your website. (Available for a customer after their first payment, with the agreement checked).<br/><strong>Before turning this option on, please contact P24 to enable adequate services on your account for on-site Blik payments.</strong><br/><br/><em>Example view for the buyer:</em><br/><img src="https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-wtyczki/woocommerce/helper/en_blik_lvl0.png" alt="BLIK Level 0 Payment" style="max-width: 400px">', 'woocommerce-p24'),
             ],
             'title' => [
                 'type' => 'text',
@@ -89,74 +76,18 @@ class Gateway extends WC_Payment_Gateway
             'description' => [
                 'type' => 'textarea',
                 'title' => __('Description', 'woocommerce-p24'),
-                'description' => __('Description of payment which the user sees during checkout', 'woocommerce-p24')
+                'description' => __('Description of payment which the user sees during checkout', 'woocommerce-p24'),
+                'default' => __('You can find the BLIK code in your banking app', 'woocommerce-p24')
             ],
             'one_click_enabled' => [
                 'type' => 'checkbox',
                 'title' => __('BLIK One Click Payment', 'woocommerce-p24'),
                 'label' => __('Enable one click BLIK payment', 'woocommerce-p24'),
-                'info' => '<svg class="p24-ui-icon" style="width:22px;"><use href="#p24-icon-info"></use></svg> '.__('<h3>BLIK One Click Payment</h3>Enabling this option allows for BLIK payments, using saved alias. (Available for a customer after their first payment, with the agreement checked).<br/><strong>Before turning this option on, please contact P24 to enable adequate services on your account for on-site Blik payments.</strong><br/><br/><em>Example view for the buyer:</em><br/><img src="https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-wtyczki/woocommerce/helper/en_blik_oneclick.png" alt="BLIK One Click Payment" style="max-width: 400px">', 'woocommerce-p24'),
+                'info' => '<svg class="p24-ui-icon" style="width:22px;"><use href="#p24-icon-info"></use></svg> ' . __('<h3>BLIK One Click Payment</h3>Enabling this option allows for BLIK payments, using saved alias. (Available for a customer after their first payment, with the agreement checked).<br/><strong>Before turning this option on, please contact P24 to enable adequate services on your account for on-site Blik payments.</strong><br/><br/><em>Example view for the buyer:</em><br/><img src="https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-wtyczki/woocommerce/helper/en_blik_oneclick.png" alt="BLIK One Click Payment" style="max-width: 400px">', 'woocommerce-p24'),
                 'default' => 'no',
             ]],
             $this->fee_settings()
         );
-    }
-
-    public function pre_save_blik_reference(Transaction $transaction): void
-    {
-        $order = $transaction->order;
-        $save_reference = $order->get_meta('_p24_save_blik', true);
-
-        if (!$save_reference) return;
-
-        $alias = $this->get_blik_reference($order->get_billing_email());
-
-        if (!$alias) return;
-
-        $reference_id = $this->save_blik_reference($alias, $order->get_id(), $order->get_customer_id());
-
-        if ($alias->status === Reference::STATUS_REGISTERED) {
-            $order->update_meta_data('_p24_save_blik', 'completed');
-        } else if ($reference_id) {
-            $order->update_meta_data('_p24_save_blik', $reference_id);
-        }
-
-        $order->save();
-    }
-
-    public function save_blik_reference(Reference_Notification $alias, $hash, $customer_id): ?int
-    {
-        $reference = new Reference_Simple();
-        $reference->set_ref_id($alias->reference);
-        $reference->set_status($alias->status);
-        $reference->set_hash($alias->status === Reference::STATUS_REGISTERED ? $alias->reference : $hash);
-        $reference->set_valid_to($alias->expiration->format(DateTimeInterface::W3C));
-        $reference->set_type($alias->type === 'UID' ? Reference::TYPE_BLIK : Reference::TYPE_BLIK_RECURRING);
-        $reference->set_info(__('BLIK one click', 'woocommerce-p24'));
-
-        return Reference::save_reference($reference, null, $customer_id);
-    }
-
-    public function get_blik_reference($email, $value = null): ?Reference_Notification
-    {
-        $resource = new Blik_Resource();
-        $response = $resource->get_aliases($email);
-
-        Logger::log($response['data'], Logger::DEBUG);
-
-        if (empty($response['data'])) return null;
-
-        if ($value) {
-            [$alias] = array_search($value, array_column($response['data'], 'value'));
-            $alias = new Reference_Notification($alias);
-        } else {
-            [$alias] = $response['data'];
-            $alias = new Reference_Notification($alias);
-        }
-
-        if (!$alias->validate()) return null;
-
-        return $alias;
     }
 
     private function sanitize(array $data): array
@@ -229,13 +160,11 @@ class Gateway extends WC_Payment_Gateway
 
         if ($save && $type != 'one-click') {
             $transaction->set_save_blik(true);
-            $order->update_meta_data('_p24_save_blik', true);
-            $order->save();
         }
 
         if ($type == 'one-click' && $this->one_click_enabled()) {
             $one_click_id = (int)$payment_data['oneclick'];
-            $reference = Reference::get_and_check($one_click_id, $order->get_customer_id());
+            $reference = One_Clicks::get_blik_alias($one_click_id);
 
             if ($reference) {
                 $transaction->set_one_click(Transaction::ONE_CLICK_BLIK);
@@ -280,12 +209,6 @@ class Gateway extends WC_Payment_Gateway
         $one_click_items = [];
 
         if ($get_one_clicks && $one_click_enabled) {
-            $current_user = wp_get_current_user();
-
-            $one_click_items = Reference::findAll(['where' =>
-                ['user.ID = %d AND t.type = %s AND t.status = %d', (int)$current_user->ID, 'blik', Reference::STATUS_REGISTERED]
-            ]);
-
             $one_click_items = array_map(function ($item) {
                 return [
                     'id' => $item->get_id(),
@@ -294,7 +217,7 @@ class Gateway extends WC_Payment_Gateway
                     'name' => $item->get_info(),
                     'logo' => $item->get_icon()
                 ];
-            }, $one_click_items);
+            }, One_Clicks::get_blik_aliases());
         }
 
         return [
@@ -316,7 +239,8 @@ class Gateway extends WC_Payment_Gateway
                     'input' => __('BLIK code', 'woocommerce-p24'),
                     'save' => __('Save blik alias for future payments', 'woocommerce-p24'),
                     'cancel' => _x('Continue without saving alias', 'BLIK confirm alias creation', 'woocommerce-p24'),
-                    'regulation' => sprintf(__('I hereby state that I have read the <a href="%s" target="_blank">regulations</a> and <a href="%s" target="_blank">information obligation</a> of "Przelewy24"', 'woocommerce-p24'), Core::get_rules_url(), Core::get_tos_url()),
+                    /* translators: %1$s: URL to the regulations page, %2$s: URL to the information obligation page */
+                    'regulation' => sprintf(__('I hereby state that I have read the <a href="%1$s" target="_blank">regulations</a> and <a href="%2$s" target="_blank">information obligation</a> of "Przelewy24"', 'woocommerce-p24'), Core::get_rules_url(), Core::get_tos_url()),
                 ],
                 'use_saved' => _x('Use saved payment method - on-click', 'BLIK one-click', 'woocommerce-p24'),
                 'or' => _x('or use BLIK code', 'BLIK one-click', 'woocommerce-p24'),

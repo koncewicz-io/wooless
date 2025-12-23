@@ -73,6 +73,31 @@ use Inertia\Response;
         ]);
     }
 
+    public function state()
+    {
+        $promises = [
+            'cart' => $this->client->getAsync(
+                uri: 'wc/store/v1/cart',
+                options: ['headers' => ['Cart-Token' => $this->frontCart->cartToken()]]
+            ),
+        ];
+
+        $responses = Promise\Utils::settle($promises)->wait();
+
+        $rejected = $this->rejected($responses, ['cart']);
+        if ($rejected) {
+            return response()->json([
+                'cart' => null
+            ]);
+        }
+
+        $this->frontCart->saveCartToken($responses['cart']['value']);
+
+        return response()->json([
+            'cart' => $this->frontCart->cartResponse($responses['cart']['value'])
+        ]);
+    }
+
     public function selectShippingRate(Request $request)
     {
         $rules = [
@@ -119,13 +144,17 @@ use Inertia\Response;
                         'json' => [
                             'namespace' => 'furgonetka',
                             'data' => [
-                                'service' => $request->furgonetka['selected_point']['service'],
-                                'service_type' => $request->furgonetka['selected_point']['service_type'],
-                                'code' => $request->furgonetka['selected_point']['code'],
-                                'name' => $request->furgonetka['selected_point']['name'],
-                                'cod' => false
+                                [
+                                    'action'  => 'set_point',
+                                    'payload' => [
+                                        'service'      => $request->furgonetka['selected_point']['service'],
+                                        'service_type' => $request->furgonetka['selected_point']['service_type'],
+                                        'code'         => $request->furgonetka['selected_point']['code'],
+                                        'name'         => $request->furgonetka['selected_point']['name'],
+                                    ],
+                                ],
                             ],
-                        ]
+                        ],
                     ]
                 )
             ];

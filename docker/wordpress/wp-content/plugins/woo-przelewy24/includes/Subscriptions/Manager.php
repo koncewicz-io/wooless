@@ -36,7 +36,7 @@ class Manager
 
         add_action('przelewy24_after_verify_transaction', [$this, 'handle_subscriptions'], 20);
 
-        $this->notice();
+        add_action('init', [$this, 'notice']);
     }
 
     public function cron_schedules($schedules): array
@@ -56,11 +56,12 @@ class Manager
 
     public function notice(): void
     {
-        $card_gateway_is_enabled = Gateways_Manager::$gateways[Core::CARD_IN_SHOP_METHOD]->is_enabled();
+        new Notice(__('Subscription Przelewy24 requires <strong>Przelewy24 - Card payment</strong> to be enabled', 'woocommerce-p24'), Notice::INFO, false, 999, function () {
+            $isset = isset(Gateways_Manager::$gateways[Core::CARD_IN_SHOP_METHOD]);
+            $card_gateway_is_enabled = $isset && Gateways_Manager::$gateways[Core::CARD_IN_SHOP_METHOD]->is_enabled();
 
-        if (Subscriptions::is_enabled() && !$card_gateway_is_enabled) {
-            new Notice(__('Subscription Przelewy24 requires <strong>Przelewy24 - Card payment</strong> to be enabled', 'woocommerce-p24'), Notice::WARNING);
-        }
+            return Subscriptions::is_enabled() && !$card_gateway_is_enabled;
+        });
     }
 
     public function handle_subscriptions(Transaction $transaction): void

@@ -14,7 +14,10 @@ class Refund
     public function refund($gateway)
     {
         if (is_admin()) {
-            if (strpos($gateway, 'przelewy24') === 0) {
+            $oldPlugin = strpos($gateway, 'przelewy24') === 0;
+            $featuredMethods = strpos($gateway, Core::MAIN_METHOD . '-') === 0;
+
+            if ($oldPlugin || $featuredMethods) {
                 return Core::MAIN_METHOD;
             }
         }

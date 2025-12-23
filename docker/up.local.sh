@@ -2,7 +2,6 @@
 
 DOCKER_APP_CONTAINER="wooless-app"
 DOCKER_WORDPRESS_APP_CONTAINER="wooless-wordpress-app"
-DOCKER_WORDPRESS_DB_CONTAINER="wooless-wordpress-db"
 
 WORDPRESS_URL="https://localhost/wordpress"
 WORDPRESS_TITLE="Wooless Shop"
@@ -10,20 +9,14 @@ WORDPRESS_ADMIN_USER="wordpress"
 WORDPRESS_ADMIN_PASSWORD="secret"
 WORDPRESS_ADMIN_EMAIL="marek@koncewicz.io"
 
-WORDPRESS_PLUGIN_ACF_VERSION=6.3.11
-WORDPRESS_PLUGIN_WOOCOMMERCE_VERSION=9.5.1
-WORDPRESS_PLUGIN_FURGONETKA_VERSION=1.6.2
+WORDPRESS_PLUGIN_ACF_VERSION=6.7.0
+WORDPRESS_PLUGIN_WOOCOMMERCE_VERSION=10.4.3
+WORDPRESS_PLUGIN_FURGONETKA_VERSION=1.8.3
 WORDPRESS_PLUGIN_ACF_TO_REST_API_VERSION=3.3.4
 WORDPRESS_PLUGIN_JWT_AUTH_VERSION=3.0.2
 
 # Start containers
 docker compose -f docker-compose.local.yml -p wooless up -d
-
-echo "Waiting for the wordpress database to be ready..."
-until docker exec $DOCKER_WORDPRESS_DB_CONTAINER mysqladmin ping -h"$DOCKER_WORDPRESS_DB_CONTAINER" -u"${WORDPRESS_DB_USER}" -p"${WORDPRESS_DB_PASSWORD}" --silent; do
-    echo "The wordpress database is still starting..."
-    sleep 2
-done
 
 docker exec $DOCKER_WORDPRESS_APP_CONTAINER mkdir -p /var/www/.wp-cli/cache
 docker exec $DOCKER_WORDPRESS_APP_CONTAINER chown -R www-data:www-data /var/www/.wp-cli
@@ -118,9 +111,6 @@ docker exec --user www-data $DOCKER_WORDPRESS_APP_CONTAINER wp plugin install \
     furgonetka \
     --version=$WORDPRESS_PLUGIN_FURGONETKA_VERSION \
     --activate
-
-# Headless fix
-docker cp ./wordpress/wp-content/plugins/furgonetka/public/class-furgonetka-public.php $DOCKER_WORDPRESS_APP_CONTAINER:/var/www/html/wp-content/plugins/furgonetka/public/class-furgonetka-public.php
 
 echo "Create shipping zone..."
 SHIPPING_ZONE_ID=$(docker exec --user www-data $DOCKER_WORDPRESS_APP_CONTAINER wp wc shipping_zone create \

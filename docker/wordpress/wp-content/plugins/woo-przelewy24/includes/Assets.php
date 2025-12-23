@@ -47,6 +47,7 @@ class Assets
             [$handle, $name, $data, $admin] = $script;
 
             if ($for_admin === $admin) {
+                $data = is_callable($data) ? $data() : $data;
                 wp_localize_script($handle, $name, $data);
             }
         }
@@ -67,7 +68,7 @@ class Assets
         self::$scripts[] = [$handle, $src, $admin, $callback, $external, $depedencies];
     }
 
-    static function add_script_localize(string $handle, string $name, array $data, bool $admin = false)
+    static function add_script_localize(string $handle, string $name, $data, bool $admin = false)
     {
         self::$localize_scripts[] = [$handle, $name, $data, $admin];
     }

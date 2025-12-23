@@ -64,19 +64,28 @@ class General_Webhooks extends Webhook
             $order_id = $this->get_order_id();
             $notification = new Notification($this->get_input());
             $transaction = new Transaction($order_id);
+
+            Logger::log('[P24] Notification received for order ' . $order_id);
             $transaction->verify($notification);
+            Logger::log('[P24] Verify executed for order ' . $order_id);
 
             do_action('przelewy24_after_verify_transaction', $transaction);
+
+            status_header(200);
+            echo 'OK';
         } catch (\Exception $e) {
-            Logger::log($e->getMessage(), Logger::EXCEPTION);
+            Logger::log('[P24 ERROR] ' . $e->getMessage(), Logger::EXCEPTION);
+            status_header(500);
+            echo 'ERROR';
         }
 
         exit;
     }
 
+
     private function verify_refund(): void
     {
-        try {
+        try   {
             $order_id = $this->get_order_id();
             $notification = new Refund_Notification($this->get_input());
             $refund = new Refund($order_id);

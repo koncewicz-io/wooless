@@ -36,20 +36,17 @@ class Gateway extends WC_Payment_Gateway
     {
         $this->id = Core::GOOGLE_PAY_IN_SHOP_METHOD;
 
-        $this->icon = apply_filters('woocommerce_gateway_icon', WC_P24_PLUGIN_URL . '/assets/svg/google-pay.svg');
+        $this->icon = apply_filters('woocommerce_gateway_icon', WC_P24_PLUGIN_URL . 'assets/svg/google-pay.svg');
         $this->method = Payment_Methods::GOOGLE_PAY;
         $this->method_alt = Payment_Methods::GOOGLE_PAY_ALT;
-
+        $this->description = $this->get_option('description');
+        $this->supports = ['products', 'refunds'];
         $this->subgroup = 'external-payments';
 
         $this->method_title = __('Przelewy24 - Google Pay', 'woocommerce-p24');
+        /* translators: %s: URL to the general configuration page */
         $this->method_description = sprintf(__('Google Pay option on the shop <br /><a href="%s">General configuration</a>', 'woocommerce-p24'), Core::get_settings_url());
-
         $this->title = $this->get_option('title') ?: __('Google Pay', 'woocommerce-p24');
-        $this->description = $this->get_option('description');
-        $this->supports = ['products', 'refunds'];
-
-        $this->init_form_fields();
 
         new Fee($this);
         $this->webhooks = new Google_Pay_Webhooks($this);
@@ -58,6 +55,7 @@ class Gateway extends WC_Payment_Gateway
         add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
         add_action('woocommerce_rest_checkout_process_payment_with_context', [$this, 'process_payment_rest'], 10, 2);
 
+        $this->init_form_fields();
         $this->init_legacy();
     }
 
@@ -85,20 +83,15 @@ class Gateway extends WC_Payment_Gateway
             }
 
             if (!empty($requires)) {
+                /* translators: %s: List of required fields for Google Pay configuration */
                 new Notice(sprintf(__('Przelewy24 - Google Pay requires <strong>%s</strong> to work properly', 'woocommerce-p24'), implode(', ', $requires)), Notice::WARNING);
             }
         }
     }
 
-    public function block_support(): Base_Gateway_Block
-    {
-        return new Google_Pay_Block($this);
-    }
-
     public function init_form_fields(): void
     {
         $this->form_fields = array_merge([
-
             'information' => [
                 'type' => 'description',
                 'description' => __('Enabling this option allows customers to pay using Google Pay directly on the shop website.<br><strong>Before turning this option on, please contact P24 to enable adequate services on your account for on-site card payments.</strong>', 'woocommerce-p24'),
@@ -221,7 +214,8 @@ class Gateway extends WC_Payment_Gateway
             'i18n' => [
                 'label' => [
                     'submit' => __('Pay by Google Pay', 'woocommerce-p24'),
-                    'regulation' => sprintf(__('I hereby state that I have read the <a href="%s" target="_blank">regulations</a> and <a href="%s" target="_blank">information obligation</a> of "Przelewy24"', 'woocommerce-p24'), Core::get_rules_url(), Core::get_tos_url()),
+                    /* translators: %1$s: URL to the regulations page, %2$s: URL to the information obligation page */
+                    'regulation' => sprintf(__('I hereby state that I have read the <a href="%1$s" target="_blank">regulations</a> and <a href="%2$s" target="_blank">information obligation</a> of "Przelewy24"', 'woocommerce-p24'), Core::get_rules_url(), Core::get_tos_url()),
                 ],
                 'error' => [
                     'unavailable' => __('This payment method is unavailable, for this browser', 'woocommerce-p24'),

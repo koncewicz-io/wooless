@@ -33,8 +33,8 @@ use WC_P24\Render;
 
     <?php if ($banner): ?>
         <figure class="p24-ui-banner__right">
-                <a href="<?= $banner->url ?>" target="_blank">
-                    <img src="<?= $banner->banner ?>" alt="" />
+                <a href="<?= $banner->url ?>" target="_blank" title="Przelewy24">
+                    <img src="<?= $banner->banner . '?t=' . time() ?>" alt="Przelewy24" />
                 </a>
         </figure>
     <?php endif; ?>

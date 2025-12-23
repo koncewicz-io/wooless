@@ -223,7 +223,7 @@ const furgonetkaDeliveryToType = computed(() => {
 
             if (service) {
                 const [serviceKey, serviceValue] = service;
-                data[serviceKey] = serviceValue;
+                data[serviceKey] = serviceValue.courier_service;
             }
         }
     }

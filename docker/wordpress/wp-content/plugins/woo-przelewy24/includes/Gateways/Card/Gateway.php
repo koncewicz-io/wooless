@@ -19,7 +19,6 @@ use WC_P24\Helper;
 use WC_P24\Models\Database\Reference;
 use WC_P24\Models\Simple\Card_Simple;
 use WC_P24\Models\Transaction;
-use WC_P24\Utilities\Base_Gateway_Block;
 use WC_P24\Utilities\Payment_Methods;
 use WC_P24\Utilities\Sanitizer;
 use WC_P24\Utilities\Validator;
@@ -38,18 +37,16 @@ class Gateway extends WC_Payment_Gateway
     {
         $this->id = Core::CARD_IN_SHOP_METHOD;
 
-        $this->icon = apply_filters('woocommerce_gateway_icon', WC_P24_PLUGIN_URL . '/assets/card.svg');
+        $this->icon = apply_filters('woocommerce_gateway_icon', WC_P24_PLUGIN_URL . 'assets/card.svg');
         $this->method = Payment_Methods::CARD_PAYMENT;
         $this->method_alt = Payment_Methods::CARD_PAYMENT_ALT;
-
-        $this->method_title = __('Przelewy24 - Card payment', 'woocommerce-p24');
-        $this->method_description = sprintf(__('Card payment option on the shop <br /><a href="%s">General configuration</a>', 'woocommerce-p24'), Core::get_settings_url());
-
-        $this->title = $this->get_option('title') ?: __('Card payment', 'woocommerce-p24');
         $this->description = $this->get_option('description');
         $this->supports = ['products', 'refunds', 'p24-subscription'];
 
-        $this->init_form_fields();
+        $this->method_title = __('Przelewy24 - Card payment', 'woocommerce-p24');
+        /* translators: %s: URL to the general configuration page */
+        $this->method_description = sprintf(__('Card payment option on the shop <br /><a href="%s">General configuration</a>', 'woocommerce-p24'), Core::get_settings_url());
+        $this->title = $this->get_option('title') ?: __('Card payment', 'woocommerce-p24');
 
         new Fee($this);
         $this->webhooks = new Card_Webhooks($this);
@@ -58,6 +55,7 @@ class Gateway extends WC_Payment_Gateway
         add_action('woocommerce_rest_checkout_process_payment_with_context', [$this, 'process_payment_rest'], 10, 2);
         add_action('przelewy24_after_verify_transaction', [$this, 'save_card_reference'], 10, 1);
 
+        $this->init_form_fields();
         $this->init_legacy();
     }
 
@@ -83,20 +81,18 @@ class Gateway extends WC_Payment_Gateway
         return $result;
     }
 
-    public function block_support(): Base_Gateway_Block
-    {
-        return new Card_Block($this);
-    }
-
     public function init_form_fields(): void
     {
         $this->form_fields = array_merge([
             'enabled' => [
                 'type' => 'checkbox',
-                'label' => __('Enable Przelewy24 - card payment', 'woocommerce-p24'),
+                'label' => __('Enable Przelewy24 - card payments in-store', 'woocommerce-p24'),
                 'custom_attributes' => ['data-enabled' => true],
-                'info' => '<svg class="p24-ui-icon" style="width:22px;"><use href="#p24-icon-info"></use></svg> '.__('<h3>Card payment</h3>Enabling this option allows for card payments, using saved alias. (Available for a customer after their first payment, with the agreement checked). <br/><strong>Before turning this option on, please contact P24 to enable adequate services on your account for on-site card payments.</strong><br/><br/><em>Example view for the buyer:</em><br/><img src="https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-wtyczki/woocommerce/helper/en_karta_lvl0.png" alt="Card payment" style="max-width: 400px">', 'woocommerce-p24'),
-
+                'info' => '<svg class="p24-ui-icon" style="width:22px;"><use href="#p24-icon-info"></use></svg> ' . __('<h3>Card Payments</h3>Enabling this option allows customers to pay directly using their credit or debit cards within the store. The payment form is securely embedded on the website, ensuring a seamless and user-friendly experience for buyers. <br/><br/><strong>Requirements:</strong><ul><li>Before enabling this option, please contact Przelewy24 to activate the necessary services on your account.</li><li>Ensure your store has an SSL certificate to secure customer data.</li></ul><br/><em>Example view for the buyer:</em><br/><img src="https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-wtyczki/woocommerce/helper/en_karta_lvl0.png" alt="Card payment example" style="max-width: 400px">.', 'woocommerce-p24'),
+                'information' => [
+                    'type' => 'description',
+                    'description' => __('Enabling this option allows for card payments directly within the store using a dedicated card form displayed on the website.', 'woocommerce-p24'),
+                ]
             ],
             'title' => [
                 'type' => 'text',
@@ -130,25 +126,24 @@ class Gateway extends WC_Payment_Gateway
                 'title' => __('One Click Card Payment', 'woocommerce-p24'),
                 'label' => __('Enable one click card payment', 'woocommerce-p24'),
                 'description' => __('If enabled, prevents use of Click to Pay for logged users', 'woocommerce-p24'),
-                'info' => '<svg class="p24-ui-icon" style="width:22px;"><use href="#p24-icon-info"></use></svg> '.__('<h3>One Click Card Payment</h3>Enabling this option allows for card payments using a saved alias. This functionality is available only for logged-in buyers who have an account in the store. It becomes accessible after the customer\'s first payment, provided they have agreed to save their card details. <br/><strong>Before turning this option on, please contact P24 to enable the necessary services on your account for on-site card payments.</strong><br/><br/><em>Example view for the buyer:</em><br/><img src="https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-wtyczki/woocommerce/helper/en_karta_oneclick.png" alt="One Click Card Payment" style="max-width: 400px">', 'woocommerce-p24'),
+                'info' => '<svg class="p24-ui-icon" style="width:22px;"><use href="#p24-icon-info"></use></svg> ' . __('<h3>One Click Card Payment</h3>Enabling this option allows for card payments using a saved alias. This functionality is available only for logged-in buyers who have an account in the store. It becomes accessible after the customer\'s first payment, provided they have agreed to save their card details. <br/><strong>Before turning this option on, please contact P24 to enable the necessary services on your account for on-site card payments.</strong><br/><br/><em>Example view for the buyer:</em><br/><img src="https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-wtyczki/woocommerce/helper/en_karta_oneclick.png" alt="One Click Card Payment" style="max-width: 400px">', 'woocommerce-p24'),
                 'default' => 'no',
             ],
-        ],
-            $this->fee_settings(),
-            [
-                'styles' => [
-                    'type' => 'code',
-                    'title' => __('Styling options', 'woocommerce-p24'),
-                    'default' => '{
-                        "lang": "pl", 
+            'styles' => [
+                'type' => 'code',
+                'title' => __('Styling options', 'woocommerce-p24'),
+                'default' => '{
+                        "lang": "pl",
+                        "loader": true,
+                        "errorMessage": false, 
                         "agreement": { 
-                            "contentEnabled": { "enabled": false, "checkboxEnabled": false },
-                            "TOSLanguage": "pl"
+                            "contentEnabled": { "enabled": false, "checkboxEnabled": false }
                         }
                     }',
-                    'description' => sprintf(__('Widget styling settings in JSON format, detailed documentation available <a href="%s" target="_blank">here</a>', 'woocommerce-p24'), 'https://developers.przelewy24.pl/extended/index.php?pl#tag/Inicjalizacja-formularza/Stylowanie-oraz-opcje-formularza'),
-                ]
-            ]);
+                /* translators: %s: URL to the detailed documentation page */
+                'description' => sprintf(__('Widget styling settings in JSON format, detailed documentation available <a href="%s" target="_blank">here</a>', 'woocommerce-p24'), 'https://developers.przelewy24.pl/extended/index.php?pl#tag/Inicjalizacja-formularza/Stylowanie-oraz-opcje-formularza'),
+            ]
+        ], $this->fee_settings());
     }
 
     public function save_card_reference(Transaction $transaction): void
@@ -227,6 +222,10 @@ class Gateway extends WC_Payment_Gateway
 
         if (Helper::order_has_subscription_product($transaction->order)) {
             $card_payment_type = Transaction::CARD_INITIAL;
+        }
+
+        if ($type == 'c2p') {
+            $card_payment_type = Transaction::CARD_C2P;
         }
 
         if ($save && $type != 'one-click') {
@@ -324,7 +323,8 @@ class Gateway extends WC_Payment_Gateway
                 'label' => [
                     'save' => __('Save card reference for future payments', 'woocommerce-p24'),
                     'submit' => __('Pay by card', 'woocommerce-p24'),
-                    'regulation' => sprintf(__('I hereby state that I have read the <a href="%s" target="_blank">regulations</a> and <a href="%s" target="_blank">information obligation</a> of "Przelewy24"', 'woocommerce-p24'), Core::get_rules_url(), Core::get_tos_url()),
+                    /* translators: %1$s: URL to the regulations page, %2$s: URL to the information obligation page */
+                    'regulation' => sprintf(__('I hereby state that I have read the <a href="%1$s" target="_blank">regulations</a> and <a href="%2$s" target="_blank">information obligation</a> of "Przelewy24"', 'woocommerce-p24'), Core::get_rules_url(), Core::get_tos_url()),
                 ],
                 'error' => [
                     'general' => _x('Unknown error has occurred', 'Card in the shop', 'woocommerce-p24'),

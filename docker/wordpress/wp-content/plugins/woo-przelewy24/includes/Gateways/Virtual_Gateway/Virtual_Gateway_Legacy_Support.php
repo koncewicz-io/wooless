@@ -41,7 +41,8 @@ trait Virtual_Gateway_Legacy_Support
                 ],
                 'label' => [
                     'submit' => __('Pay with Przelewy24', 'woocommerce-p24'),
-                    'regulation' => sprintf(__('I hereby state that I have read the <a href="%s" target="_blank">regulations</a> and <a href="%s" target="_blank">information obligation</a> of "Przelewy24"', 'woocommerce-p24'), Core::get_rules_url(), Core::get_tos_url()),
+                    /* translators: %1$s: URL to the regulations page, %2$s: URL to the information obligation page */
+                    'regulation' => sprintf(__('I hereby state that I have read the <a href="%1$s" target="_blank">regulations</a> and <a href="%2$s" target="_blank">information obligation</a> of "Przelewy24"', 'woocommerce-p24'), Core::get_rules_url(), Core::get_tos_url()),
                 ]
             ]
         ];

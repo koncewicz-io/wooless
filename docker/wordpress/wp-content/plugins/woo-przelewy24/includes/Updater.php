@@ -31,10 +31,7 @@ class Updater
 
     public function get_update_data()
     {
-        delete_transient(self::VALUE_KEY);
-        $value = get_transient(self::VALUE_KEY);
-
-        if (false === $value) {
+        if (!($value = get_transient(self::VALUE_KEY))) {
             try {
                 $client = new Updater_Client();
                 $value = $client->request();

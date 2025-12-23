@@ -8,6 +8,7 @@ if (!defined('ABSPATH')) {
 
 use Exception;
 use WC_P24\Config;
+use WC_P24\Core;
 
 class Api_Client
 {
@@ -32,6 +33,10 @@ class Api_Client
 
         $headers = [
             'Authorization' => 'Basic ' . $encodedCredentials,
+            'P24-PLUGIN-NAME' => 'Woocommerce',
+            'P24-PLUGIN-VERSION' => Core::$version,
+            'P24-PLUGIN-MERCHANT-ID' => $this->config->get_merchant_id(),
+            'P24-PLUGIN-WEBPAGE' => get_bloginfo('url')
         ];
 
         $args = [
@@ -54,12 +59,25 @@ class Api_Client
         $response = wp_remote_request($url, $args);
 
         if (is_wp_error($response)) {
-            throw new Exception('HTTP request failed: ' . $response->get_error_message());
+            wc_get_logger()->error(
+                'P24 API request error: ' . $response->get_error_message(),
+                ['source' => 'woo-przelewy24']
+            );
+            return ['error' => true, 'message' => $response->get_error_message()];
         }
 
-        $response = json_decode(wp_remote_retrieve_body($response), true);
+        $body = wp_remote_retrieve_body($response);
+        $decoded = json_decode($body, true);
 
-        return $response;
+        if (!is_array($decoded)) {
+            wc_get_logger()->error(
+                'P24 API returned invalid JSON response: ' . $body,
+                ['source' => 'woo-przelewy24']
+            );
+            return ['error' => true, 'message' => 'Invalid JSON from P24 API'];
+        }
+
+        return $decoded;
     }
 
     public function get_api_url(): string

@@ -42,14 +42,16 @@ abstract class Webhook
         return (int)$_GET[self::ORDER_ID_QUERY_KEY];
     }
 
-    protected function get_order(): \WC_Order
+    protected function get_order(?int $order_id = null): \WC_Order
     {
         $input = $this->get_input();
-        $order_id = (int)$input['orderId'] ?? null;
-        $order_key = $input['orderKey'] ?? null;
         $is_legacy = $input['checkout'] == 'legacy';
+        $order_key = $input['orderKey'] ?? null;
 
-        $order_id = $is_legacy ? $order_id : WC()->session->get('store_api_draft_order');
+        if (empty($order_id)) {
+            $order_id = isset($input['orderId']) ? (int) $input['orderId'] : false;
+            $order_id = $is_legacy ? $order_id : WC()->session->get('store_api_draft_order');
+        }
 
         $order = wc_get_order($order_id);
 
@@ -69,7 +71,7 @@ abstract class Webhook
         $input = $this->get_input();
         $payment_details = $input['paymentDetails'];
 
-        if ($payment_details['oneClick']){
+        if ($payment_details['oneClick']) {
             $payment_details['oneclick'] = $payment_details['oneClick'];
         }
 

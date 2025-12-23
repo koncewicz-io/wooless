@@ -8,12 +8,26 @@ class Encryption
 
     public static function get_iv(): string
     {
-        return hex2bin(get_option('p24_iv', ''));
+        $iv = get_option('p24_iv', '');
+
+        if (empty($iv)) {
+            $iv = bin2hex(openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::CIPHER)));
+            update_option('p24_iv', $iv);
+        }
+
+        return hex2bin($iv);
     }
 
     public static function get_key(): string
     {
-        return get_option('p24_encryption_key', '');
+        $key = get_option('p24_encryption_key', '');
+
+        if (empty($key)) {
+            $key = self::generate_key();
+            update_option('p24_encryption_key', $key);
+        }
+
+        return $key;
     }
 
     public static function generate_key(): string
@@ -33,7 +47,14 @@ class Encryption
 
     public static function encrypt($data, $base64_encode_output = true): string
     {
-        $encryptedData = openssl_encrypt($data, self::CIPHER, self::get_key(), 0, self::get_iv());
+        $iv = self::get_iv();
+        $key = self::get_key();
+
+        if (empty($iv) || empty($key)) {
+            throw new \RuntimeException('An encryption issue occurred, data was not saved.');
+        }
+
+        $encryptedData = openssl_encrypt($data, self::CIPHER, $key, 0, $iv);
 
         if ($base64_encode_output) {
             $encryptedData = base64_encode($encryptedData);
@@ -65,7 +86,6 @@ class Encryption
         $session_id_raw = $order_id . '_' . $timestamp;
         $hashed_session_id = hash('sha256', $session_id_raw);
 
-        return $hashed_session_id;
-
+        return substr($hashed_session_id, 0, 32);
     }
 }

@@ -2,16 +2,30 @@
 
 namespace WC_P24\Gateways;
 
-use WC_P24\API\Resources\Payment_Methods_Resource;
-use WC_P24\Render;
-use WC_P24\Utilities\Payment_Methods;
-
 if (!defined('ABSPATH')) {
     exit;
 }
 
 trait Settings_Helper
 {
+    public function enable_and_set_defaults(): void
+    {
+        $id = $this->get_option_key();
+
+        if (get_option($id) === false) {
+            do_action('woocommerce_update_option', ['id' => $id]);
+            $this->update_option('enabled', 'yes');
+
+            foreach ($this->form_fields as $key => $field) {
+                if (isset($field['default'])) {
+                    $this->update_option($key, $field['default']);
+                }
+            }
+
+            do_action('woocommerce_update_options');
+        }
+    }
+
     public function fee_settings(): array
     {
         return [

@@ -35,20 +35,17 @@ class Gateway extends WC_Payment_Gateway
     {
         $this->id = Core::APPLE_PAY_IN_SHOP_METHOD;
 
-        $this->icon = apply_filters('woocommerce_gateway_icon', WC_P24_PLUGIN_URL . '/assets/svg/apple-pay.svg');
+        $this->icon = apply_filters('woocommerce_gateway_icon', WC_P24_PLUGIN_URL . 'assets/svg/apple-pay.svg');
         $this->method = Payment_Methods::APPLE_PAY;
         $this->method_alt = Payment_Methods::APPLE_PAY_ALT;
-
+        $this->description = $this->get_option('description');
+        $this->supports = ['products', 'refunds'];
         $this->subgroup = 'external-payments';
 
         $this->method_title = __('Przelewy24 - Apple Pay', 'woocommerce-p24');
+        /* translators: %s: URL to the general configuration page */
         $this->method_description = sprintf(__('Apple Pay option on the shop <br /><a href="%s">General configuration</a>', 'woocommerce-p24'), Core::get_settings_url());
-
         $this->title = $this->get_option('title') ?: __('Apple Pay', 'woocommerce-p24');
-        $this->description = $this->get_option('description');
-        $this->supports = ['products', 'refunds'];
-
-        $this->init_form_fields();
 
         new Fee($this);
         $this->webhooks = new Apple_Pay_Webhooks($this);
@@ -58,6 +55,7 @@ class Gateway extends WC_Payment_Gateway
         add_action('woocommerce_rest_checkout_process_payment_with_context', [$this, 'process_payment_rest'], 10, 2);
 
         $this->init_legacy();
+        $this->init_form_fields();
     }
 
     public function is_available(): bool
@@ -105,14 +103,10 @@ class Gateway extends WC_Payment_Gateway
             }
 
             if (!empty($requires)) {
+                /* translators: %s: List of required fields for Apple Pay configuration */
                 new Notice(sprintf(__('Przelewy24 - Apple Pay requires <strong>%s</strong> to work properly', 'woocommerce-p24'), implode(', ', $requires)), Notice::WARNING);
             }
         }
-    }
-
-    public function block_support(): Base_Gateway_Block
-    {
-        return new Apple_Pay_Block($this);
     }
 
     public function init_form_fields(): void
@@ -148,7 +142,7 @@ class Gateway extends WC_Payment_Gateway
                 'type' => 'text',
                 'title' => __('Apple merchant ID', 'woocommerce-p24'),
                 'description' => __('Your Apple merchant ID', 'woocommerce-p24'),
-                'info' => '<h3><svg class="p24-ui-icon" style="width:22px;"><use href="#p24-icon-info"></use></svg> '.__('Apple merchant ID', 'woocommerce-p24').'</h3> '.__('In order to obtain configuration data for Apple Pay on-site payments, please follow the instructions from our documentation below: <a href="https://developers.przelewy24.pl/index.php?en#tag/APay-Description/Creating-Apple-Pay-Payment-Processing-Certificate" title="Instruction" target="_blank">Creating Apple Pay Payment Processing Certificate</a><br/>', 'woocommerce-p24'),
+                'info' => '<h3><svg class="p24-ui-icon" style="width:22px;"><use href="#p24-icon-info"></use></svg> ' . __('Apple merchant ID', 'woocommerce-p24') . '</h3> ' . __('In order to obtain configuration data for Apple Pay on-site payments, please follow the instructions from our documentation below: <a href="https://developers.przelewy24.pl/index.php?en#tag/APay-Description/Creating-Apple-Pay-Payment-Processing-Certificate" title="Instruction" target="_blank">Creating Apple Pay Payment Processing Certificate</a><br/>', 'woocommerce-p24'),
                 'required' => true
             ],
             'merchant_domain' => [
@@ -161,7 +155,7 @@ class Gateway extends WC_Payment_Gateway
                 'type' => 'text',
                 'title' => __('Apple certificate key', 'woocommerce-p24'),
                 'description' => __('Absolute path of certificate .key.pem file', 'woocommerce-p24'),
-                'info' => '<h3><svg class="p24-ui-icon" style="width:22px;"><use href="#p24-icon-info"></use></svg> '.__('Apple certificate key', 'woocommerce-p24').'</h3> '.__('In order to obtain configuration data for Apple Pay on-site payments, please follow the instructions from our documentation below: <a href="https://developers.przelewy24.pl/index.php?en#tag/APay-Description/Creating-Apple-Pay-Payment-Processing-Certificate" title="Instruction" target="_blank">Creating Apple Pay Payment Processing Certificate</a><br/>', 'woocommerce-p24'),
+                'info' => '<h3><svg class="p24-ui-icon" style="width:22px;"><use href="#p24-icon-info"></use></svg> ' . __('Apple certificate key', 'woocommerce-p24') . '</h3> ' . __('In order to obtain configuration data for Apple Pay on-site payments, please follow the instructions from our documentation below: <a href="https://developers.przelewy24.pl/index.php?en#tag/APay-Description/Creating-Apple-Pay-Payment-Processing-Certificate" title="Instruction" target="_blank">Creating Apple Pay Payment Processing Certificate</a><br/>', 'woocommerce-p24'),
                 'required' => true
             ],
             'cert_key' => [
@@ -261,7 +255,8 @@ class Gateway extends WC_Payment_Gateway
             'i18n' => [
                 'label' => [
                     'submit' => __('Pay by Apple Pay', 'woocommerce-p24'),
-                    'regulation' => sprintf(__('I hereby state that I have read the <a href="%s" target="_blank">regulations</a> and <a href="%s" target="_blank">information obligation</a> of "Przelewy24"', 'woocommerce-p24'), Core::get_rules_url(), Core::get_tos_url()),
+                    /* translators: %1$s: URL to the regulations page, %2$s: URL to the information obligation page */
+                    'regulation' => sprintf(__('I hereby state that I have read the <a href="%1$s" target="_blank">regulations</a> and <a href="%2$s" target="_blank">information obligation</a> of "Przelewy24"', 'woocommerce-p24'), Core::get_rules_url(), Core::get_tos_url()),
                 ],
                 'error' => [
                     'unavailable' => __('This payment method is unavailable, for this browser', 'woocommerce-p24'),

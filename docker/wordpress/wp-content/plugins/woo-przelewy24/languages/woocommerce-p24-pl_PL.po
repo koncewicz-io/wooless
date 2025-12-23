@@ -1,14 +1,12 @@
-# Copyright (C) 2025 PayPro S.A.
-# This file is distributed under the same license as the Przelewy24 Payment Gateway plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Przelewy24 Payment Gateway 1.01.01\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-przelewy24\n"
-"POT-Creation-Date: 2025-02-25T12:49:55+00:00\n"
-"PO-Revision-Date: 2025-02-27 12:18+0000\n"
+"Project-Id-Version: Przelewy24 Payment Gateway 1.0.14\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/1.0.16\n"
+"POT-Creation-Date: 2025-11-18T15:07:30+00:00\n"
+"PO-Revision-Date: 2025-11-19 08:24+0000\n"
 "Last-Translator: \n"
 "Language-Team: Polski\n"
-"Language: pl_PL\n"
+"Language: pl-PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,18 +14,15 @@ msgstr ""
 "&&(n%100<10||n%100 >= 20)? 1 : 2);\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: woocommerce-p24\n"
-"X-Loco-Version: 2.7.1; wp-6.7.2\n"
+"X-Loco-Version: 2.8.0; wp-6.8.1; php-8.1.32\n"
 
-#: assets/assets/blocks/block-p24-apple-pay/block-p24-apple-pay.js:1
-#: assets/assets/blocks/block-p24-blik/block-p24-blik.js:1
-#: assets/assets/blocks/block-p24-card/block-p24-card.js:1
-#: assets/assets/blocks/block-p24-google-pay/block-p24-google-pay.js:1
-#: assets/assets/blocks/block-p24-online-payments/block-p24-online-payments.js:1
 #: assets/blocks/block-p24-apple-pay/block-p24-apple-pay.js:1
 #: assets/blocks/block-p24-blik/block-p24-blik.js:1
 #: assets/blocks/block-p24-card/block-p24-card.js:1
 #: assets/blocks/block-p24-google-pay/block-p24-google-pay.js:1
 #: assets/blocks/block-p24-online-payments/block-p24-online-payments.js:1
+#: src/components.js:41
+#, js-format
 msgid "+%d other methods"
 msgstr "+%d pozostałych metod"
 
@@ -35,8 +30,9 @@ msgstr "+%d pozostałych metod"
 msgid "...and more"
 msgstr "…i więcej"
 
-#: includes/Encryption/Settings.php:60 includes/General/Settings.php:67
-#: includes/Multicurrency/Settings.php:81
+#: includes/Encryption/Settings.php:60 includes/General/Settings.php:66
+#: includes/Multicurrency/Settings.php:85
+#: templates/multicurrency_content.php:47
 msgid "16 characters"
 msgstr "16 znaków"
 
@@ -44,7 +40,19 @@ msgstr "16 znaków"
 msgid "32 characters"
 msgstr "32 znaki"
 
-#: includes/Gateways/Blik/Gateway.php:81
+#: includes/Installments/Settings.php:25
+msgid ""
+"<a href=\"https://www.przelewy24.pl/en/help-center/i-sell-with-"
+"przelewy24/payment-methods-and-account/is-your-question-not-answered\" "
+"target=\"_blank\" title=\"Check how to enable or disable Przelewy24 "
+"Installments\">How to enable or disable Przelewy24 Installments ?</a>"
+msgstr ""
+"<a href=\"https://www.przelewy24.pl/centrum-pomocy/sprzedaje-z-"
+"przelewy24/metody-platnosci-konto/brakuje-odpowiedzi-na-twoje-pytanie\" "
+"target=\"_blank\" title=\"Sprawdź jak włączyć lub wyłączyć Przelewy24 Raty\">"
+"Jak włączyć lub wyłączyć Przelewy24 Raty ?</a>"
+
+#: includes/Gateways/Blik/Gateway.php:68
 msgid ""
 "<h3>BLIK Level 0 Payment</h3>Enabling this option will allow the payer to "
 "enter the BLIK code directly on your website. (Available for a customer "
@@ -66,7 +74,7 @@ msgstr ""
 "wtyczki/woocommerce/helper/pl_blik_lvl0.png\" alt=\"Płatność BLIK Level 0\" "
 "style=\"max-width: 400px\">"
 
-#: includes/Gateways/Blik/Gateway.php:98
+#: includes/Gateways/Blik/Gateway.php:86
 msgid ""
 "<h3>BLIK One Click Payment</h3>Enabling this option allows for BLIK payments,"
 " using saved alias. (Available for a customer after their first payment, "
@@ -87,32 +95,36 @@ msgstr ""
 "wtyczki/woocommerce/helper/pl_blik_oneclick.png\" alt=\"Płatność BLIK One "
 "Click\" style=\"max-width: 400px\">"
 
-#: includes/Gateways/Card/Gateway.php:98
+#: includes/Gateways/Card/Gateway.php:91
 msgid ""
-"<h3>Card payment</h3>Enabling this option allows for card payments, using "
-"saved alias. (Available for a customer after their first payment, with the "
-"agreement checked). <br/><strong>Before turning this option on, please "
-"contact P24 to enable adequate services on your account for on-site card "
-"payments.</strong><br/><br/><em>Example view for the buyer:</em><br/><img "
-"src=\"https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-"
-"wtyczki/woocommerce/helper/en_karta_lvl0.png\" alt=\"Card payment\" "
-"style=\"max-width: 400px\">"
+"<h3>Card Payments</h3>Enabling this option allows customers to pay directly "
+"using their credit or debit cards within the store. The payment form is "
+"securely embedded on the website, ensuring a seamless and user-friendly "
+"experience for buyers. <br/><br/><strong>Requirements:</strong><ul><li>"
+"Before enabling this option, please contact Przelewy24 to activate the "
+"necessary services on your account.</li><li>Ensure your store has an SSL "
+"certificate to secure customer data.</li></ul><br/><em>Example view for the "
+"buyer:</em><br/><img src=\"https://www.przelewy24.pl/storage/app/media/do-"
+"pobrania/gotowe-wtyczki/woocommerce/helper/en_karta_lvl0.png\" alt=\"Card "
+"payment example\" style=\"max-width: 400px\">."
 msgstr ""
-"<h3>Płatność kartą</h3>Włączenie tej opcji umożliwia płatności kartą za "
-"pomocą zapisanego aliasu. (Dostępne dla klienta po pierwszej płatności, "
-"jeśli wyraził na to zgodę). <br/><strong>Przed włączeniem tej opcji "
-"skontaktuj się z Przelewy24, aby aktywować odpowiednie usługi na swoim "
-"koncie dla płatności kartą na stronie.</strong><br/><br/><em>Przykładowy "
-"widok dla kupującego:</em><br/><img src=\"https://www.przelewy24."
-"pl/storage/app/media/do-pobrania/gotowe-"
-"wtyczki/woocommerce/helper/pl_karta_lvl0.png\" alt=\"Płatność kartą\" "
-"style=\"max-width: 400px\">"
+"<h3>Płatności Kartą</h3> Włączenie tej opcji pozwala klientom na "
+"bezpośrednie płatności kartą płatniczą w sklepie. Formularz płatności jest "
+"bezpiecznie osadzony na stronie internetowej, zapewniając płynne i przyjazne "
+"dla użytkownika doświadczenie zakupowe. <br/><br/><strong>Wymagania:</strong>"
+" <ul> <li>Przed włączeniem tej opcji skontaktuj się z Przelewy24, aby "
+"aktywować niezbędne usługi na swoim koncie.</li> <li>Upewnij się, że Twój "
+"sklep posiada certyfikat SSL w celu zabezpieczenia danych klientów.</li> "
+"</ul> <br/><em>Przykładowy widok dla kupującego:</em> <br/><img src=\"https:"
+"//www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-"
+"wtyczki/woocommerce/helper/pl_karta_lvl0.png\" alt=\"Przykład płatności "
+"kartą\" style=\"max-width: 400px\">"
 
-#: includes/Subscriptions/Settings.php:31
+#: includes/Subscriptions/Settings.php:25
 msgid "<h3>Configure settings for subscriptions</h3>"
 msgstr "<h3>Skonfiguruj ustawienia subskrypcji</h3>"
 
-#: includes/Installments/Settings.php:39
+#: includes/Installments/Settings.php:31
 msgid ""
 "<h3>Enable Installment widget</h3> Enabling this option will display a "
 "widget/simulator with information about the available installment offer. "
@@ -134,7 +146,7 @@ msgstr ""
 "wtyczki/woocommerce/helper/pl_p24_setting-simulator1.png\" alt=\"Włącz "
 "widżet rat\" style=\"max-width: 400px\">"
 
-#: includes/Installments/Settings.php:59
+#: includes/Installments/Settings.php:54
 msgid ""
 "<h3>Installment simulator modal</h3> When a customer clicks on the widget, a "
 "pop-up window may appear with information about the installment simulation."
@@ -150,7 +162,7 @@ msgstr ""
 "wtyczki/woocommerce/helper/pl_p24_setting-simulator2.png\" alt=\"Symulator "
 "rat - modal\" style=\"max-width: 400px\">"
 
-#: includes/General/Settings.php:48
+#: includes/General/Settings.php:47
 msgid ""
 "<h3>IP address</h3>To ensure a correct connection with the payment gateway, "
 "it is necessary to enter the IP address of the store's server in the "
@@ -173,7 +185,7 @@ msgstr ""
 "wtyczki/woocommerce/helper/pl_p24_setting-ip.png\" alt=\"Dodawanie przycisku "
 "przełączania waluty\" style=\"max-width: 400px\">"
 
-#: includes/Gateways/Card/Gateway.php:133
+#: includes/Gateways/Card/Gateway.php:129
 msgid ""
 "<h3>One Click Card Payment</h3>Enabling this option allows for card payments "
 "using a saved alias. This functionality is available only for logged-in "
@@ -198,7 +210,7 @@ msgstr ""
 "wtyczki/woocommerce/helper/pl_karta_oneclick.png\" alt=\"Płatność kartą One "
 "Click\" style=\"max-width: 400px\">"
 
-#: includes/Installments/Settings.php:47
+#: includes/Installments/Settings.php:42
 msgid ""
 "<h3>Widget size options</h3> Choose the Size of the Displayed Element: "
 "Options are MINI and MAX<br /><br /><em>Example view for the buyer:</em><br "
@@ -209,7 +221,7 @@ msgstr ""
 "<h3>Opcje rozmiaru widżetu</h3> Wybierz rozmiar wyświetlanego elementu: "
 "Opcje to MINI i MAX<br /><br /><em>Przykładowy widok dla kupującego:</em><br "
 "/><img src=\"https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-"
-"wtyczki/woocommerce/helper/en_p24_setting-installment3.png\" alt=\"Opcje "
+"wtyczki/woocommerce/helper/pl_p24_setting-installment3.png\" alt=\"Opcje "
 "rozmiaru widżetu\" style=\"max-width: 400px\">"
 
 #: includes/General/Settings.php:39
@@ -230,7 +242,7 @@ msgstr ""
 "Przelewy24\" target=\"_blank\" title=\"Konfiguracja adresu IP dla konta w "
 "panelu Przelewy24\">link</a>)."
 
-#: includes/Subscriptions/Settings.php:31
+#: includes/Subscriptions/Settings.php:25
 msgid ""
 "<ol> <li><strong>Enable the Subscriptions Module</strong> - Make sure the "
 "<em>Subscriptions Module</em> is activated.</li> <li><strong>Create a New "
@@ -254,7 +266,7 @@ msgstr ""
 "<p>Po zapisaniu produkt będzie działał jako subskrypcja z automatycznymi "
 "odnowieniami.</p>"
 
-#: includes/Subscriptions/Settings.php:37
+#: includes/Subscriptions/Settings.php:31
 msgid ""
 "<ol><li><strong>Create a New Product</strong> - Navigate to the <em>"
 "\"Product data\"</em> section.</li> <li><strong>Select the Product "
@@ -280,7 +292,7 @@ msgstr ""
 "wtyczki/woocommerce/helper/pl_p24_setting-subscription1.png\" "
 "alt=\"Przewodnik konfiguracji subskrypcji\" style=\"max-width: 400px\">"
 
-#: includes/General/Settings.php:48
+#: includes/General/Settings.php:47
 msgid ""
 "<p>If you do not have an account with Przelewy24 yet, create your account."
 "<br>Please register your account in the Przelewy24 service - <a href=\"https:"
@@ -294,16 +306,7 @@ msgstr ""
 "</p>Po utworzeniu konta otrzymasz niezbędne dane do skonfigurowania tego "
 "modułu płatności.<br>"
 
-#: includes/General/Settings.php:48
-#| msgid ""
-#| "<p>The module mode determines whether the plugin connects to the live "
-#| "Przelewy24 environment or the test environment. Choose \"Normal - "
-#| "production\" if you want to process real transactions, or \"Test - "
-#| "sandbox\" if you want to test with simulated transactions.<br><strong>(If "
-#| "you use test mode, be sure to enter the configuration keys from the "
-#| "Przelewy24 Sandbox environment-production and sandbox keys are different.)"
-#| "</strong>.</p><ul style=\"list-style: disclosure-open !important;\"><li>"
-#| "<h4 style=\"color:#cc0000;\">"
+#: includes/General/Settings.php:47
 msgid ""
 "<p>The module mode determines whether the plugin connects to the live "
 "Przelewy24 environment or the test environment. Choose \"Normal - "
@@ -320,7 +323,7 @@ msgstr ""
 "wprowadzasz klucze konfiguracyjne z środowiska Sandbox Przelewy24 – klucze "
 "produkcyjne i sandbox różnią się.)</strong>.</p>"
 
-#: includes/General/Settings.php:48
+#: includes/General/Settings.php:47
 msgid ""
 "<p>The plug-in also allows orders to be processed in <strong>test "
 "mode</strong>. <br>To do this you need to switch the module mode from "
@@ -344,7 +347,7 @@ msgstr ""
 "konta-testowego-(sandbox)\" target=\"_blank\" title=\"Konfiguracja konta "
 "testowego (sandbox)\">link</a>.</p>"
 
-#: includes/Multicurrency/Settings.php:44
+#: includes/Multicurrency/Settings.php:48
 msgid ""
 "<p>The Przelewy24 payment module allows handling multiple currencies within "
 "a single store.</p> <h3>How to configure?</h3> <ol> <li><strong>Activate the "
@@ -371,7 +374,7 @@ msgstr ""
 "Klucz API</strong></li> </ul> <li><strong>Ustaw mnożnik waluty</strong> - "
 "określ kurs wymiany w stosunku do bazowej waluty sklepu.</li></ol>"
 
-#: includes/Multicurrency/Settings.php:50
+#: includes/Multicurrency/Settings.php:54
 msgid ""
 "<p>To add a currency switcher button to your website, use the pre-made block "
 "called <strong>\"Przelewy24 - Multi Currency Switcher\"</strong>.</p><img "
@@ -403,16 +406,16 @@ msgstr ""
 "wtyczki/woocommerce/helper/pl_p24_multicurrency3.png\" alt=\"Dodawanie "
 "przycisku przełącznika walut\" style=\"max-width: 400px\">"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:170
+#: includes/Gateways/Apple_Pay/Gateway.php:164
 msgid "Absolute path of certificate .crt.pem file"
 msgstr "Bezwzględna ścieżka do pliku certyfikatu .crt.pem"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:163
+#: includes/Gateways/Apple_Pay/Gateway.php:157
 msgid "Absolute path of certificate .key.pem file"
 msgstr "Bezwzględna ścieżka do pliku certyfikatu .key.pem"
 
 #: templates/account/one-click-tab.php:36
-#: templates/account/one-click-tab.php:68
+#: templates/account/one-click-tab.php:71
 #: templates/subscription/account-tab.php:39
 #: templates/subscription/account-tab.php:72
 msgid "Actions"
@@ -424,36 +427,44 @@ msgid "Active"
 msgstr "Aktywny"
 
 #: templates/multicurrency/content.php:39
+#: templates/multicurrency_content.php:27
 msgid "Add configuration"
 msgstr "Dodaj konfigurację"
 
-#: includes/Multicurrency/Settings.php:50
+#: includes/Multicurrency/Settings.php:54
 msgid "Adding a Currency Switcher Button"
 msgstr "Dodawanie przycisku przełączania waluty"
 
-#: includes/Gateways/Settings_Helper.php:36
+#: includes/Gateways/Settings_Helper.php:50
 msgid "Additional cost added to the order at checkout"
 msgstr "Dodatkowy koszt dodawany do zamówienia w koszyku"
 
-#: includes/Installments/Settings.php:91
+#: includes/Installments/Settings.php:92
 msgid "After add to cart"
 msgstr "Po dodaniu do koszyka"
 
-#: includes/Gateways/Online_Payments/Gateway.php:68
+#: includes/Installments/Settings.php:93
+msgid "After product price"
+msgstr "Pod ceną produktu"
+
+#: includes/Installments/Settings.php:90
+msgid "After product summary"
+msgstr "Po podsumowaniu produktu"
+
+#: includes/Gateways/Online_Payments/Gateway.php:64
 msgid ""
 "After selecting this payment, you will be redirected to the Przelewy24 "
 "payments"
 msgstr ""
-"Po wybraniu tej metody płatności zostaniesz przekierowany do systemu "
-"płatności Przelewy24."
+"Po wybraniu tej płatności zostaniesz przekierowany do płatności Przelewy24"
 
 #: includes/Subscriptions/Listing.php:54
 msgid "All"
 msgstr "Wszystko"
 
-#: includes/General/Settings.php:73 includes/General/Settings.php:77
-#: includes/Multicurrency/Settings.php:87
-#: templates/multicurrency/content.php:51 templates/wizard/wizard.php:80
+#: includes/General/Settings.php:72 includes/General/Settings.php:76
+#: includes/Multicurrency/Settings.php:91
+#: templates/multicurrency/content.php:51 templates/wizard/wizard.php:81
 msgid "API key"
 msgstr "Klucz API"
 
@@ -461,148 +472,170 @@ msgstr "Klucz API"
 msgid "API key is not valid"
 msgstr "Klucz API jest nieprawidłowy."
 
-#: includes/Gateways/Apple_Pay/Gateway.php:169
+#: includes/Gateways/Apple_Pay/Gateway.php:163
 msgid "Apple certificate cert"
 msgstr "Certyfikat Apple"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:162
-#: includes/Gateways/Apple_Pay/Gateway.php:164
+#: includes/Gateways/Apple_Pay/Gateway.php:156
+#: includes/Gateways/Apple_Pay/Gateway.php:158
 msgid "Apple certificate key"
 msgstr "Klucz certyfikatu Apple"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:149
-#: includes/Gateways/Apple_Pay/Gateway.php:151
+#: includes/Gateways/Apple_Pay/Gateway.php:143
+#: includes/Gateways/Apple_Pay/Gateway.php:145
 msgid "Apple merchant ID"
 msgstr "Identyfikator sprzedawcy Apple"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:143
+#: includes/Gateways/Apple_Pay/Gateway.php:137
 msgid "Apple merchant name"
 msgstr "Nazwa sprzedawcy Apple"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:47
-#: includes/Gateways/Apple_Pay/Gateway.php:134
+#: includes/Gateways/Apple_Pay/Gateway.php:48
+#: includes/Gateways/Apple_Pay/Gateway.php:128
 msgid "Apple Pay"
 msgstr "Apple Pay"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:45
+#. translators: %s: URL to the general configuration page
+#: includes/Gateways/Apple_Pay/Gateway.php:47
+#, php-format
 msgid ""
 "Apple Pay option on the shop <br /><a href=\"%s\">General configuration</a>"
 msgstr ""
-"Płatności Apple Pay w sklepie <br /><a href=\"%s\">Ogólna konfiguracja</a>"
+"Płatności Apple Pay w sklepie <br /><a href=\"%s\">Konfiguracja ogólna</a>"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:100
+#: includes/Gateways/Apple_Pay/Gateway.php:98
 msgctxt "Apple pay require field"
 msgid "certificate key"
 msgstr "klucz certyfikatu"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:104
+#: includes/Gateways/Apple_Pay/Gateway.php:102
 msgctxt "Apple pay require field"
 msgid "certificate pem"
 msgstr "certyfikat pem"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:96
+#: includes/Gateways/Apple_Pay/Gateway.php:94
 msgctxt "Apple pay require field"
 msgid "domain"
 msgstr "domena"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:92
+#: includes/Gateways/Apple_Pay/Gateway.php:90
 msgctxt "Apple pay require field"
 msgid "merchant id"
 msgstr "Id sprzedawcy"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:156
+#: src/admin/multi-currency.js:122
+msgid "Are you sure you want to remove this configuration"
+msgstr "Czy na pewno chcesz usunąć tę konfigurację?"
+
+#: includes/Gateways/Apple_Pay/Gateway.php:150
 msgid "Associated domain with Apple merchant"
 msgstr "Powiązana domena ze sprzedawcą Apple"
 
 #. translators: 1: Required PHP version, 2: Current PHP version
 #: includes/Compatibility/Compatibility_Checker.php:52
-msgid "At least PHP version %1$s is required. Current version: %2$s."
-msgstr "Wymagana jest co najmniej wersja PHP %1$s. Aktualna wersja: %2$s."
+#, php-format
+msgid ""
+"At least PHP version %1$s is required to use the Przelewy24 Payment Gateway "
+"plugin. Current version: %2$s."
+msgstr ""
+"Do korzystania z wtyczki Przelewy24 Payment Gateway wymagana jest co "
+"najmniej wersja PHP %1$s. Aktualna wersja: %2$s."
 
 #. translators: 1: Required WooCommerce version, 2: Current WooCommerce version
-#: includes/Compatibility/Compatibility_Checker.php:64
-msgid "At least Woocommerce version %1$s is required. Current version: %2$s."
+#: includes/Compatibility/Compatibility_Checker.php:69
+#, php-format
+msgid ""
+"At least WooCommerce version %1$s is required to use the Przelewy24 Payment "
+"Gateway plugin. Current version: %2$s."
 msgstr ""
-"Wymagana jest co najmniej wersja Woocommerce %1$s. Aktualna wersja: %2$s."
+"Do korzystania z wtyczki Przelewy24 Payment Gateway wymagana jest co "
+"najmniej wersja WooCommerce %1$s. Aktualna wersja: %2$s."
 
 #: includes/Models/Database/Subscription.php:370
 msgid "Attempted card charge failed"
 msgstr "Próba obciążenia karty nie powiodła się."
 
-#: includes/Installments/Settings.php:90
+#: includes/Installments/Settings.php:91
 msgid "Before add to cart"
 msgstr "Przed dodaniem do koszyka"
 
-#: includes/Gateways/Blik/Gateway.php:48 includes/Gateways/Blik/Gateway.php:87
+#: includes/Gateways/Blik/Gateway.php:44 includes/Gateways/Blik/Gateway.php:74
 msgid "BLIK"
 msgstr "BLIK"
 
-#: includes/Gateways/Blik/Gateway.php:316
+#: includes/Gateways/Blik/Gateway.php:239
 msgid "BLIK code"
 msgstr "Kod BLIK"
 
-#: includes/Gateways/Blik/Gateway.php:307
+#: includes/Gateways/Blik/Gateway.php:230
 msgctxt "BLIK code validation"
 msgid "Enter a valid BLIK code (6 digits)"
 msgstr "Wprowadź poprawny kod BLIK (6 cyfr)"
 
-#: includes/Gateways/Blik/Gateway.php:318
+#: includes/Gateways/Blik/Gateway.php:241
 msgctxt "BLIK confirm alias creation"
 msgid "Continue without saving alias"
 msgstr "Kontynuuj bez zapisywania aliasu"
 
-#: includes/Gateways/Blik/Gateway.php:135
+#: includes/OneClick/One_Clicks.php:39
 msgid "BLIK one click"
 msgstr "Płatność BLIK One Click"
 
-#: includes/Gateways/Blik/Gateway.php:96
+#: includes/Gateways/Blik/Gateway.php:84
 msgid "BLIK One Click Payment"
 msgstr "Płatność BLIK One Click"
 
-#: includes/Gateways/Blik/Gateway.php:322
+#: includes/Gateways/Blik/Gateway.php:246
 msgctxt "BLIK one-click"
 msgid "or use BLIK code"
 msgstr "lub użyj kodu BLIK"
 
-#: includes/Gateways/Blik/Gateway.php:321
+#: includes/Gateways/Blik/Gateway.php:245
 msgctxt "BLIK one-click"
 msgid "Use saved payment method - on-click"
 msgstr "Użyj zapisanej metody płatności - One Click"
 
-#: includes/Gateways/Blik/Gateway.php:305
+#: includes/Gateways/Blik/Gateway.php:228
 msgctxt "BLIK payment"
 msgid "An unexpected error occurred"
 msgstr "Wystąpił nieoczekiwany błąd"
 
-#: includes/Gateways/Blik/Gateway.php:306
+#: includes/Gateways/Blik/Gateway.php:229
 msgctxt "BLIK payment"
 msgid "Time to confirm the transaction has passed"
 msgstr "Upłynął czas na potwierdzenie transakcji"
 
-#: includes/Gateways/Blik/Gateway.php:304
+#: includes/Gateways/Blik/Gateway.php:227
 msgctxt "BLIK payment"
 msgid "You cancelled a payment using BLIK"
 msgstr "Anulowałeś płatność BLIK"
 
-#: includes/Gateways/Blik/Gateway.php:46
+#. translators: %s: URL to the general configuration page
+#: includes/Gateways/Blik/Gateway.php:43
+#, php-format
 msgid ""
 "BLIK payment option on the shop <br /><a href=\"%s\">General "
 "configuration</a>"
 msgstr ""
 "Opcja płatności BLIK w sklepie <br /><a href=\"%s\">Konfiguracja ogólna</a>"
 
-#: includes/Gateways/Card/Gateway.php:123
+#: includes/Gateways/Card/Gateway.php:119
 msgid "both, logged and non-logged users"
 msgstr "zarówno zalogowanych, jak i niezalogowanych użytkowników"
 
 #. translators: %s refers to the plugin name
 #: includes/Cleaner.php:59
+#, php-format
 msgid ""
 "By confirming, all configuration data for the <strong>%s</strong> plugin "
 "will be erased"
 msgstr ""
-"Potwierdzenie spowoduje usunięcie wszystkich danych konfiguracyjnych <strong>"
-"%s</strong> zostaną usunięte"
+"Potwierdzając, wszystkie dane konfiguracyjne wtyczki <strong>%s</strong> "
+"zostaną usunięte"
+
+#: templates/multicurrency_content.php:66
+msgid "Cancel"
+msgstr "Anuluj"
 
 #: includes/Models/Database/Subscription.php:223
 msgid "Cancelled"
@@ -613,11 +646,13 @@ msgctxt "Card in the shop"
 msgid "Unknown error has occurred"
 msgstr "Wystąpił nieznany błąd"
 
-#: includes/Gateways/Card/Gateway.php:48 includes/Gateways/Card/Gateway.php:105
+#: includes/Gateways/Card/Gateway.php:49 includes/Gateways/Card/Gateway.php:101
 msgid "Card payment"
 msgstr "Płatność kartą"
 
-#: includes/Gateways/Card/Gateway.php:46
+#. translators: %s: URL to the general configuration page
+#: includes/Gateways/Card/Gateway.php:48
+#, php-format
 msgid ""
 "Card payment option on the shop <br /><a href=\"%s\">General "
 "configuration</a>"
@@ -644,29 +679,31 @@ msgstr "Wyczyść dane"
 msgid "Clear plugin data"
 msgstr "Wyczyść dane wtyczki"
 
-#: includes/Gateways/Card/Gateway.php:114
+#: includes/Gateways/Card/Gateway.php:110
 msgid "Click to Pay enabled"
 msgstr "Click to Pay włączone"
 
-#: includes/Gateways/Card/Gateway.php:120
+#: includes/Gateways/Card/Gateway.php:116
 msgid "Click to Pay enabled for"
 msgstr "Click to Pay włączone dla"
 
-#: includes/Installments/Settings.php:33
+#: includes/Installments/Settings.php:25
 msgid "Configure settings for Installments widgets"
 msgstr "Konfiguracja ustawień dla widżetu Raty"
 
-#: includes/Gateways/Blik/Gateway.php:312
+#: includes/Gateways/Blik/Gateway.php:235
 msgid "Confirm the creation of an alias in the banking application"
 msgstr "Potwierdź utworzenie aliasu w aplikacji bankowej"
 
-#: includes/Gateways/Blik/Gateway.php:311
+#: includes/Gateways/Blik/Gateway.php:234
 msgid "Confirm transactions in the banking app"
 msgstr "Potwierdź transakcję w aplikacji bankowej"
 
-#: includes/General/Settings.php:64 includes/General/Settings.php:69
-#: includes/Multicurrency/Settings.php:78
-#: templates/multicurrency/content.php:50 templates/wizard/wizard.php:73
+#: includes/General/Settings.php:63 includes/General/Settings.php:68
+#: includes/Multicurrency/Settings.php:82
+#: templates/multicurrency/content.php:50
+#: templates/multicurrency_content.php:45
+#: templates/multicurrency_content.php:81 templates/wizard/wizard.php:74
 msgid "CRC key"
 msgstr "CRC klucz"
 
@@ -679,6 +716,7 @@ msgid "Credit card - renew subscription"
 msgstr "Karta płatnicza - odnowienie subskrypcji"
 
 #: templates/multicurrency/content.php:47
+#: templates/multicurrency_content.php:77
 msgid "Currency"
 msgstr "Waluta"
 
@@ -688,6 +726,7 @@ msgid "Change"
 msgstr "Zmień"
 
 #: templates/multicurrency/content.php:48
+#: templates/multicurrency_content.php:78
 msgid "Currency code"
 msgstr "Kod waluty"
 
@@ -695,7 +734,7 @@ msgstr "Kod waluty"
 msgid "Currency is not valid"
 msgstr "Waluta jest niepoprawna"
 
-#: includes/OneClick/Client_Page.php:98
+#: includes/OneClick/Client_Page.php:99
 msgctxt "customer account menu label"
 msgid "P24 One click's"
 msgstr "Płatności One click"
@@ -705,7 +744,7 @@ msgctxt "customer account menu label"
 msgid "P24 Subscriptions"
 msgstr "Płatności subskrypcyjne"
 
-#: includes/OneClick/Client_Page.php:93
+#: includes/OneClick/Client_Page.php:94
 msgctxt "customer account page title"
 msgid "P24 One click's"
 msgstr "Płatności One click"
@@ -719,25 +758,26 @@ msgstr "Płatności subskrypcyjne"
 msgid "Data was succesfully deleted"
 msgstr "Dane zostały pomyślnie usunięte"
 
-#: includes/Subscriptions/Settings.php:43
+#: includes/Subscriptions/Settings.php:37
 msgid "Days before next subscription charge"
 msgstr "Liczba dni przed kolejnym obciążeniem"
 
 #: templates/multicurrency/content.php:78
+#: templates/multicurrency_content.php:109
 msgid "Delete"
 msgstr "Kasuj"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:138
-#: includes/Gateways/Blik/Gateway.php:91 includes/Gateways/Card/Gateway.php:109
-#: includes/Gateways/Google_Pay/Gateway.php:119
-#: includes/Gateways/Online_Payments/Gateway.php:66
+#: includes/Gateways/Apple_Pay/Gateway.php:132
+#: includes/Gateways/Blik/Gateway.php:78 includes/Gateways/Card/Gateway.php:105
+#: includes/Gateways/Google_Pay/Gateway.php:112
+#: includes/Gateways/Online_Payments/Gateway.php:62
 msgid "Description"
 msgstr "Opis"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:139
-#: includes/Gateways/Blik/Gateway.php:92 includes/Gateways/Card/Gateway.php:110
-#: includes/Gateways/Google_Pay/Gateway.php:120
-#: includes/Gateways/Online_Payments/Gateway.php:67
+#: includes/Gateways/Apple_Pay/Gateway.php:133
+#: includes/Gateways/Blik/Gateway.php:79 includes/Gateways/Card/Gateway.php:106
+#: includes/Gateways/Google_Pay/Gateway.php:113
+#: includes/Gateways/Online_Payments/Gateway.php:63
 msgid "Description of payment which the user sees during checkout"
 msgstr ""
 "Opis płatności, który użytkownik zobaczy podczas finalizacji zamówienia"
@@ -752,6 +792,7 @@ msgid "Downloads"
 msgstr "Pobierz"
 
 #: templates/multicurrency/content.php:75
+#: templates/multicurrency_content.php:106
 msgid "Edit"
 msgstr "Edycja"
 
@@ -759,55 +800,55 @@ msgstr "Edycja"
 msgid "Email"
 msgstr "Email"
 
-#: includes/Gateways/Card/Gateway.php:115
+#: includes/Gateways/Card/Gateway.php:111
 msgid "Enable Click to Pay functionality"
 msgstr "Włącz funkcję Click to Pay"
 
-#: includes/Gateways/Settings_Helper.php:25
+#: includes/Gateways/Settings_Helper.php:39
 msgid "Enable gateway fee"
 msgstr "Włącz opłatę za bramkę płatności"
 
-#: includes/Installments/Settings.php:38
+#: includes/Installments/Settings.php:30
 msgid "Enable Installment widget"
 msgstr "Włącz widżet kalkulatora ratalnego"
 
-#: includes/Multicurrency/Settings.php:49
+#: includes/Multicurrency/Settings.php:53
 msgid "Enable multicurrency module"
 msgstr "Włącz moduł wielowalutowy"
 
-#: includes/Gateways/Blik/Gateway.php:97
+#: includes/Gateways/Blik/Gateway.php:85
 msgid "Enable one click BLIK payment"
 msgstr "Włącz płatność BLIK One Click"
 
-#: includes/Gateways/Card/Gateway.php:131
+#: includes/Gateways/Card/Gateway.php:127
 msgid "Enable one click card payment"
 msgstr "Włącz płatność kartą One Click"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:127
+#: includes/Gateways/Apple_Pay/Gateway.php:121
 msgid "Enable Przelewy24 - Apple Pay"
 msgstr "Włącz Przelewy24 - Apple Pay"
 
-#: includes/Gateways/Blik/Gateway.php:79
+#: includes/Gateways/Blik/Gateway.php:66
 msgid "Enable Przelewy24 - BLIK"
 msgstr "Włącz Przelewy24 - BLIK"
 
-#: includes/Gateways/Card/Gateway.php:96
-msgid "Enable Przelewy24 - card payment"
-msgstr "Włącz Przelewy24 - płatność kartą"
+#: includes/Gateways/Card/Gateway.php:89
+msgid "Enable Przelewy24 - card payments in-store"
+msgstr "Włącz Przelewy24 - płatności kartą w sklepie"
 
-#: includes/Gateways/Google_Pay/Gateway.php:108
+#: includes/Gateways/Google_Pay/Gateway.php:101
 msgid "Enable Przelewy24 - Google Pay"
 msgstr "Włącz Przelewy24 - Google Pay"
 
-#: includes/Gateways/Online_Payments/Gateway.php:55
+#: includes/Gateways/Online_Payments/Gateway.php:51
 msgid "Enable Przelewy24 - online payments"
 msgstr "Włącz Przelewy24 - płatności online"
 
-#: includes/Subscriptions/Settings.php:36
+#: includes/Subscriptions/Settings.php:30
 msgid "Enable subscriptions module"
 msgstr "Włącz moduł subskrypcji"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:123
+#: includes/Gateways/Apple_Pay/Gateway.php:117
 msgid ""
 "Enabling this option allows customers to pay using Apple Pay directly on the "
 "shop website.<br><strong>Before turning this option on, please contact P24 "
@@ -819,7 +860,7 @@ msgstr ""
 "skontaktuj się z P24, aby włączyć odpowiednie usługi na swoim koncie do "
 "płatności kartą w sklepie.</strong>"
 
-#: includes/Gateways/Google_Pay/Gateway.php:104
+#: includes/Gateways/Google_Pay/Gateway.php:97
 msgid ""
 "Enabling this option allows customers to pay using Google Pay directly on "
 "the shop website.<br><strong>Before turning this option on, please contact "
@@ -830,6 +871,15 @@ msgstr ""
 "bezpośrednio na stronie sklepu.<br><strong>Przed włączeniem tej opcji "
 "skontaktuj się z P24, aby włączyć odpowiednie usługi na swoim koncie do "
 "płatności kartą na miejscu.</strong>"
+
+#: includes/Gateways/Card/Gateway.php:94
+msgid ""
+"Enabling this option allows for card payments directly within the store "
+"using a dedicated card form displayed on the website."
+msgstr ""
+"Włączenie tej opcji umożliwia dokonywanie płatności kartą bezpośrednio w "
+"sklepie za pomocą dedykowanego formularza kartowego wyświetlanego na stronie "
+"internetowej."
 
 #: includes/Encryption/Settings.php:27
 msgid "Encryption"
@@ -843,19 +893,19 @@ msgstr "Klucz szyfrujący"
 msgid "Encryption settings"
 msgstr "Ustawienia szyfrowania"
 
-#: includes/Multicurrency/Settings.php:98
+#: includes/Multicurrency/Settings.php:102
 msgid "Enter a multiple in relation to the base currency"
 msgstr "Wprowadź wielokrotność w stosunku do waluty bazowej"
 
-#: includes/General/Settings.php:68 includes/Multicurrency/Settings.php:82
+#: includes/General/Settings.php:67 includes/Multicurrency/Settings.php:86
 msgid "Enter the CRC key"
 msgstr "Wprowadź klucz CRC"
 
-#: includes/Multicurrency/Settings.php:90
+#: includes/Multicurrency/Settings.php:94
 msgid "Enter your API key"
 msgstr "Wprowadź klucz API"
 
-#: includes/General/Settings.php:76
+#: includes/General/Settings.php:75
 msgid "Enter your key for reports"
 msgstr "Wprowadź klucz do API"
 
@@ -867,11 +917,11 @@ msgstr "Eksportuj"
 msgid "Failure, incorrect nonce"
 msgstr "Niepowodzenie, nieprawidłowa unikalna wartość"
 
-#: includes/Gateways/Online_Payments/Gateway.php:98
+#: includes/Gateways/Online_Payments/Gateway.php:92
 msgid "Featured methods as gateway in checkout"
 msgstr "Wyróżnione metody jako osobna metoda płatności przy kasie"
 
-#: includes/Gateways/Settings_Helper.php:24
+#: includes/Gateways/Settings_Helper.php:38
 msgid "Fee"
 msgstr "Opłata dodatkowa"
 
@@ -883,35 +933,37 @@ msgstr "Ogólne"
 msgid "Generate Keys"
 msgstr "Generuj klucze"
 
-#: includes/Gateways/Google_Pay/Gateway.php:124
+#: includes/Gateways/Google_Pay/Gateway.php:117
 msgid "Google merchant ID"
 msgstr "Identyfikator sprzedawcy Google"
 
-#: includes/Gateways/Google_Pay/Gateway.php:130
+#: includes/Gateways/Google_Pay/Gateway.php:123
 msgid "Google merchant name"
 msgstr "Nazwa sprzedawcy Google"
 
-#: includes/Gateways/Google_Pay/Gateway.php:48
-#: includes/Gateways/Google_Pay/Gateway.php:115
+#: includes/Gateways/Google_Pay/Gateway.php:49
+#: includes/Gateways/Google_Pay/Gateway.php:108
 msgid "Google Pay"
 msgstr "Google Pay"
 
-#: includes/Gateways/Google_Pay/Gateway.php:46
+#. translators: %s: URL to the general configuration page
+#: includes/Gateways/Google_Pay/Gateway.php:48
+#, php-format
 msgid ""
 "Google Pay option on the shop <br /><a href=\"%s\">General configuration</a>"
 msgstr ""
 "Opcja Google Pay w sklepie <br /><a href=\"%s\">Konfiguracja ogólna</a>"
 
-#: includes/Gateways/Google_Pay/Gateway.php:84
+#: includes/Gateways/Google_Pay/Gateway.php:82
 msgctxt "Google pay require field"
 msgid "merchant id"
 msgstr "Id sprzedawcy"
 
-#: includes/Gateways/Online_Payments/Gateway.php:92
+#: includes/Gateways/Online_Payments/Gateway.php:86
 msgid "Highlight Payment Methods in Checkout"
-msgstr "Wyróżnij metody płatności w koszyku"
+msgstr "Wyróżnij metody płatności w kasie"
 
-#: includes/Gateways/Online_Payments/Gateway.php:91
+#: includes/Gateways/Online_Payments/Gateway.php:85
 msgid "Highlighted Payment Methods"
 msgstr "Wyróżnione metody płatności"
 
@@ -925,33 +977,35 @@ msgstr "https://www.przelewy24.pl/"
 msgid "https://www.przelewy24.pl/pobierz"
 msgstr "https://www.przelewy24.pl/pobierz"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:264
-#: includes/Gateways/Blik/Gateway.php:319
+#. translators: %1$s: URL to the regulations page, %2$s: URL to the information obligation page
+#: includes/Gateways/Apple_Pay/Gateway.php:259
+#: includes/Gateways/Blik/Gateway.php:243
 #: includes/Gateways/Card/Gateway.php:327
-#: includes/Gateways/Google_Pay/Gateway.php:224
-#: includes/Gateways/Online_Payments/Gateway.php:181
-#: includes/Gateways/Virtual_Gateway/Virtual_Gateway_Legacy_Support.php:44
+#: includes/Gateways/Google_Pay/Gateway.php:218
+#: includes/Gateways/Online_Payments/Gateway.php:176
+#: includes/Gateways/Virtual_Gateway/Virtual_Gateway_Legacy_Support.php:45
+#, php-format
 msgid ""
-"I hereby state that I have read the <a href=\"%s\" target=\"_blank\">"
-"regulations</a> and <a href=\"%s\" target=\"_blank\">information "
+"I hereby state that I have read the <a href=\"%1$s\" target=\"_blank\">"
+"regulations</a> and <a href=\"%2$s\" target=\"_blank\">information "
 "obligation</a> of \"Przelewy24\""
 msgstr ""
-"Oświadczam, że zapoznałem się z <a href=\"%s\" target=\"_blank\">"
-"regulaminem</a> oraz <a href=\"%s\" target=\"_blank\">obowiązkiem "
+"Oświadczam, że zapoznałem się z <a href=\"%1$s\" target=\"_blank\">"
+"regulaminem</a> oraz <a href=\"%2$s\" target=\"_blank\">obowiązkiem "
 "informacyjnym</a> serwisu \"Przelewy24\""
 
 #: includes/Subscriptions/Export.php:43
 msgid "ID"
 msgstr "ID"
 
-#: includes/Gateways/Card/Gateway.php:132
+#: includes/Gateways/Card/Gateway.php:128
 msgid "If enabled, prevents use of Click to Pay for logged users"
 msgstr ""
 "Jeśli włączone, uniemożliwia korzystanie z Click to Pay dla zalogowanych "
 "użytkowników"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:151
-#: includes/Gateways/Apple_Pay/Gateway.php:164
+#: includes/Gateways/Apple_Pay/Gateway.php:145
+#: includes/Gateways/Apple_Pay/Gateway.php:158
 msgid ""
 "In order to obtain configuration data for Apple Pay on-site payments, please "
 "follow the instructions from our documentation below: <a href=\"https:"
@@ -976,15 +1030,7 @@ msgstr "Nieaktywne"
 msgid "Initialization Vector (IV)"
 msgstr "Wektor inicjalizacji (IV)"
 
-#: includes/Installments/Settings.php:22
-msgid "Installment widget"
-msgstr "Widżet Ratalny"
-
-#: includes/Installments/Settings.php:32
-msgid "Installment Widget configuration"
-msgstr "Konfiguracja widżetu rat"
-
-#: includes/General/Settings.php:60
+#: includes/General/Settings.php:59
 msgid ""
 "It is your login to the P24 Transaction Panel. It can be found as well in "
 "the P24 Transaction Panel in <br/><strong>\"My account\"</strong> => <strong>"
@@ -1000,19 +1046,19 @@ msgstr ""
 "wtyczki/woocommerce/helper/pl_p24_setting-general-merchantid1.png\" "
 "alt=\"Merchant ID\" style=\"max-width: 400px\">"
 
-#: includes/Gateways/Card/Gateway.php:124
+#: includes/Gateways/Card/Gateway.php:120
 msgid "logged users"
 msgstr "zalogowanych użytkowników"
 
-#: includes/Installments/Settings.php:50
+#: includes/Installments/Settings.php:45
 msgid "Max"
 msgstr "Max"
 
-#: includes/Installments/Settings.php:80
+#: includes/Installments/Settings.php:77
 msgid "Max product price"
 msgstr "Maksymalna cena produktu"
 
-#: includes/Installments/Settings.php:81
+#: includes/Installments/Settings.php:78
 msgid "Maximum product price to show widget"
 msgstr "Maksymalna cena produktu do wyświetlenia widżetu"
 
@@ -1041,9 +1087,11 @@ msgctxt "menu"
 msgid "Online payments"
 msgstr "Przelewy Online"
 
-#: includes/General/Settings.php:56 includes/General/Settings.php:60
-#: includes/Multicurrency/Settings.php:70
-#: templates/multicurrency/content.php:49 templates/wizard/wizard.php:67
+#: includes/General/Settings.php:55 includes/General/Settings.php:59
+#: includes/Multicurrency/Settings.php:74
+#: templates/multicurrency/content.php:49
+#: templates/multicurrency_content.php:37
+#: templates/multicurrency_content.php:79 templates/wizard/wizard.php:68
 msgid "Merchant ID"
 msgstr "Identyfikator sprzedawcy"
 
@@ -1051,36 +1099,36 @@ msgstr "Identyfikator sprzedawcy"
 msgid "Merchant ID is not valid"
 msgstr "Identyfikator sprzedawcy jest nieprawidłowy"
 
-#: includes/Installments/Settings.php:73
+#: includes/Installments/Settings.php:67
 msgid "Min product price"
 msgstr "Minimalna cena produktu"
 
-#: includes/Installments/Settings.php:49
+#: includes/Installments/Settings.php:44
 msgid "Mini"
 msgstr "Mini"
 
-#: includes/Installments/Settings.php:74
+#: includes/Installments/Settings.php:68
 msgid "Minimal product price to show widget"
 msgstr "Minimalna cena produktu do wyświetlenia widżetu"
 
-#: includes/General/Settings.php:47
+#: includes/General/Settings.php:46
 msgid "Mode of transaction"
 msgstr "Tryb transakcji"
 
-#: includes/General/Settings.php:44 includes/General/Settings.php:48
-#: templates/wizard/wizard.php:59
+#: includes/General/Settings.php:43 includes/General/Settings.php:47
+#: templates/wizard/wizard.php:60
 msgid "Module mode"
 msgstr "Tryb modułu"
 
-#: includes/Multicurrency/Widget.php:23
+#: includes/Multicurrency/Widget.php:23 src/admin/general.js:87
 msgid "Multi currency switcher"
 msgstr "Przełącznik wielu walut"
 
-#: includes/Multicurrency/Settings.php:35
+#: includes/Multicurrency/Settings.php:39
 msgid "Multicurrency"
 msgstr "Obsługa wielu walut"
 
-#: includes/Multicurrency/Settings.php:43
+#: includes/Multicurrency/Settings.php:47
 msgid "Multicurrency configuration"
 msgstr "Konfiguracja wielowalutowości"
 
@@ -1099,19 +1147,21 @@ msgctxt "multicurrency form"
 msgid "Save"
 msgstr "Zapisz"
 
-#: includes/Multicurrency/Settings.php:95
+#: includes/Multicurrency/Settings.php:99
 #: templates/multicurrency/content.php:52
+#: templates/multicurrency_content.php:56
+#: templates/multicurrency_content.php:83
 msgid "Multiplier"
 msgstr "Mnożnik"
 
-#: includes/Gateways/Settings_Helper.php:30
+#: includes/Gateways/Settings_Helper.php:44
 msgid "Name of fee"
 msgstr "Nazwa opłaty"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:133
-#: includes/Gateways/Blik/Gateway.php:86 includes/Gateways/Card/Gateway.php:104
-#: includes/Gateways/Google_Pay/Gateway.php:114
-#: includes/Gateways/Online_Payments/Gateway.php:61
+#: includes/Gateways/Apple_Pay/Gateway.php:127
+#: includes/Gateways/Blik/Gateway.php:73 includes/Gateways/Card/Gateway.php:100
+#: includes/Gateways/Google_Pay/Gateway.php:107
+#: includes/Gateways/Online_Payments/Gateway.php:57
 msgid "Name of payment visible at checkout"
 msgstr "Nazwa płatności widoczna przy kasie"
 
@@ -1128,23 +1178,23 @@ msgstr "Brak zapisanej płatności/zakupu one click."
 msgid "No subscriptions has been subscribe yet."
 msgstr "Brak subskrypcji, które zostały zapisane."
 
-#: includes/Gateways/Card/Gateway.php:125
+#: includes/Gateways/Card/Gateway.php:121
 msgid "non-logged users"
 msgstr "niezalogowanych użytkowników"
 
-#: templates/wizard/wizard.php:62
+#: templates/wizard/wizard.php:63
 msgid "Normal"
 msgstr "Normalny"
 
-#: includes/General/Settings.php:48 includes/General/Settings.php:51
+#: includes/General/Settings.php:47 includes/General/Settings.php:50
 msgid "Normal - production"
 msgstr "Tryb normalny - produkcyjny"
 
-#: includes/Installments/Settings.php:58
+#: includes/Installments/Settings.php:53
 msgid "On click widget open installment simulator modal"
 msgstr "Po kliknięciu widżet otworzy modal symulatora rat"
 
-#: templates/account/one-click-tab.php:70
+#: templates/account/one-click-tab.php:74
 msgctxt "one click"
 msgid "Remove"
 msgstr "Usuń"
@@ -1153,7 +1203,7 @@ msgstr "Usuń"
 msgid "One click cannot be removed"
 msgstr "One click nie można usunąć"
 
-#: includes/Gateways/Card/Gateway.php:130
+#: includes/Gateways/Card/Gateway.php:126
 msgid "One Click Card Payment"
 msgstr "Płatność kartą One Click"
 
@@ -1165,11 +1215,12 @@ msgstr "One click został pomyślnie usunięty"
 msgid "or use new card details"
 msgstr "lub użyj nowych danych karty"
 
-#: includes/Models/Refund.php:125
+#: includes/Models/Refund.php:130
 msgid "Order does not exist at przelewy24 system"
 msgstr "Zamówienie nie istnieje w systemie przelewy24"
 
-#: includes/Models/Transaction.php:199
+#: includes/Models/Transaction.php:234
+#, php-format
 msgid "Order no.: %s"
 msgstr "Numer zamówienia: %s"
 
@@ -1185,25 +1236,25 @@ msgstr "ID subskrypcji P24"
 msgid "P24 Subscriptions"
 msgstr "Subskrypcje P24"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:263
+#: includes/Gateways/Apple_Pay/Gateway.php:257
 msgid "Pay by Apple Pay"
 msgstr "Zapłać przez Apple Pay"
 
-#: includes/Gateways/Card/Gateway.php:326
+#: includes/Gateways/Card/Gateway.php:325
 msgid "Pay by card"
 msgstr "Płać kartą płatniczą"
 
-#: includes/Gateways/Google_Pay/Gateway.php:223
+#: includes/Gateways/Google_Pay/Gateway.php:216
 msgid "Pay by Google Pay"
 msgstr "Płać za pomocą Google Pay"
 
-#: includes/Gateways/Blik/Gateway.php:315
+#: includes/Gateways/Blik/Gateway.php:238
 msgid "Pay with BLIK"
 msgstr "Płać za pomocą BLIK"
 
-#: includes/Gateways/Online_Payments/Gateway.php:33
-#: includes/Gateways/Online_Payments/Gateway.php:62
-#: includes/Gateways/Online_Payments/Gateway.php:180
+#: includes/Gateways/Online_Payments/Gateway.php:36
+#: includes/Gateways/Online_Payments/Gateway.php:58
+#: includes/Gateways/Online_Payments/Gateway.php:174
 #: includes/Gateways/Virtual_Gateway/Virtual_Gateway_Legacy_Support.php:43
 msgid "Pay with Przelewy24"
 msgstr "Płać za pomocą Przelewy24"
@@ -1212,22 +1263,25 @@ msgstr "Płać za pomocą Przelewy24"
 msgid "Payment method"
 msgstr "Metoda płatności"
 
-#: includes/Gateways/Online_Payments/Gateway.php:30
+#. translators: %s: URL to the general configuration page
+#: includes/Gateways/Online_Payments/Gateway.php:35
+#, php-format
 msgid ""
 "Payment option directing the user to a payment gateway <br /><a href=\"%s\">"
 "General configuration</a>"
 msgstr ""
-"Opcja płatności kierująca użytkownika do bramy płatności <br /><a "
+"Opcja płatności kierująca użytkownika do bramki płatności <br /><a "
 "href=\"%s\">Konfiguracja ogólna</a>"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:132
-#: includes/Gateways/Blik/Gateway.php:85 includes/Gateways/Card/Gateway.php:103
-#: includes/Gateways/Google_Pay/Gateway.php:113
-#: includes/Gateways/Online_Payments/Gateway.php:60
+#: includes/Gateways/Apple_Pay/Gateway.php:126
+#: includes/Gateways/Blik/Gateway.php:72 includes/Gateways/Card/Gateway.php:99
+#: includes/Gateways/Google_Pay/Gateway.php:106
+#: includes/Gateways/Online_Payments/Gateway.php:56
 msgid "Payment title"
 msgstr "Tytuł płatności"
 
-#: includes/Models/Transaction.php:375
+#: includes/Models/Transaction.php:407
+#, php-format
 msgid "Payment verified<br/><strong>P24 order ID:</strong> %s"
 msgstr "Płatność zweryfikowana<br/><strong>ID zamówienia P24:</strong> %s"
 
@@ -1248,10 +1302,14 @@ msgstr "Płatność oczekująca (odnowienie)"
 msgid "Pending refund"
 msgstr "Oczekujący zwrot"
 
-#: includes/Multicurrency/Settings.php:126
-#: includes/Multicurrency/Settings.php:164 includes/Subscriptions/Export.php:27
+#: includes/Multicurrency/Settings.php:130
+#: includes/Multicurrency/Settings.php:168 includes/Subscriptions/Export.php:27
 msgid "Permission denied"
 msgstr "Brak uprawnień"
+
+#: templates/thankyou-status-loader.php:4
+msgid "Please wait..."
+msgstr "Proszę czekać..."
 
 #: includes/Installments/Settings.php:88
 msgid "Position of widget"
@@ -1267,39 +1325,55 @@ msgstr "Produkt"
 msgid "Przelewy24"
 msgstr "Przelewy24"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:44
+#: includes/Gateways/Apple_Pay/Gateway.php:45
 msgid "Przelewy24 - Apple Pay"
 msgstr "Przelewy24 - Apple Pay"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:108
+#. translators: %s: List of required fields for Apple Pay configuration
+#: includes/Gateways/Apple_Pay/Gateway.php:107
+#, php-format
 msgid "Przelewy24 - Apple Pay requires <strong>%s</strong> to work properly"
 msgstr ""
 "Przelewy24 - Apple Pay wymaga <strong>%s</strong> do prawidłowego działania"
 
-#: includes/Gateways/Blik/Gateway.php:45
+#: includes/Gateways/Blik/Gateway.php:41
 msgid "Przelewy24 - BLIK"
 msgstr "Przelewy24 - BLIK"
 
-#: includes/Gateways/Card/Gateway.php:45
+#: includes/Gateways/Card/Gateway.php:46
 msgid "Przelewy24 - Card payment"
 msgstr "Przelewy24 - Karta płatnicza"
 
-#: includes/Gateways/Google_Pay/Gateway.php:45
+#: includes/Gateways/Google_Pay/Gateway.php:46
 msgid "Przelewy24 - Google Pay"
 msgstr "Przelewy24 - Google Pay"
 
-#: includes/Gateways/Google_Pay/Gateway.php:88
+#. translators: %s: List of required fields for Google Pay configuration
+#: includes/Gateways/Google_Pay/Gateway.php:87
+#, php-format
 msgid "Przelewy24 - Google Pay requires <strong>%s</strong> to work properly"
 msgstr ""
 "Przelewy24 - Google Pay wymaga <strong>%s</strong>, aby działać poprawnie"
 
-#: includes/Gateways/Online_Payments/Gateway.php:29
+#: src/admin/general.js:88 src/admin/general.js:89
+msgid "Przelewy24 - Multi currency switcher"
+msgstr "Przelewy24 - Przełącznik wielu walut"
+
+#: includes/Gateways/Online_Payments/Gateway.php:33
 msgid "Przelewy24 - online payments"
-msgstr "Przelewy24 - płatności online"
+msgstr "Przelewy24 - online payments"
 
 #: includes/Cleaner.php:40
 msgid "Przelewy24 cleaner"
 msgstr "Wyczyść ustawienia Przelewy24"
+
+#: includes/Installments/Settings.php:16
+msgid "Przelewy24 Installments"
+msgstr "Przelewy24 Raty"
+
+#: includes/Installments/Settings.php:24
+msgid "Przelewy24 Installments widget configuration"
+msgstr "Konfiguracja widżetu Przelewy24 Raty"
 
 #: templates/admin/order-details.php:21
 #: templates/admin/order-preview-details.php:13
@@ -1316,7 +1390,7 @@ msgstr "Przelewy24 Payment Gateway"
 msgid "Przelewy24 Payment gateway for WooCommerce."
 msgstr "Bramka płatności Przelewy24 dla WooCommerce."
 
-#: includes/Gateways/Settings_Helper.php:31
+#: includes/Gateways/Settings_Helper.php:45
 msgid "Przelewy24 service"
 msgstr "Usługa Przelewy24"
 
@@ -1333,31 +1407,43 @@ msgstr "Szczegóły transakcji Przelewy24"
 msgid "Przelewy24 wizard"
 msgstr "Kreator Przelewy24"
 
-#: includes/Models/Refund.php:114
+#: includes/Models/Refund.php:119
 msgid "Refund must be accepted by payment provider"
 msgstr "Zwrot płatności musi zostać zaakceptowany przez dostawcę płatności"
 
-#: includes/Models/Refund.php:115 includes/Models/Refund.php:250
+#: includes/Models/Refund.php:120 includes/Models/Refund.php:270
 msgid "Refund was rejected"
 msgstr "Zwrot płatności został odrzucony"
 
-#: includes/Models/Transaction.php:327
+#: includes/Models/Transaction.php:365
+#, php-format
 msgid ""
-"Register transaction<br/><strong>Session ID</strong>: %s <br/><strong>"
-"Token</strong>: %s"
+"Register transaction<br/><strong>Session ID</strong>: %1$s <br/><strong>"
+"Token</strong>: %2$s"
 msgstr ""
-"Zarejestruj transakcję<br/><strong>ID sesji</strong>: %s <br/><strong>"
-"Token</strong>: %s"
+"Zarejestruj transakcję<br/><strong>ID sesji</strong>: %1$s <br/><strong>"
+"Token</strong>: %2$s"
 
-#: includes/Models/Refund.php:102
+#: templates/multicurrency_content.php:52
+#: templates/multicurrency_content.php:82
+msgid "Reports key"
+msgstr "Klucz API"
+
+#. translators: %s: Order number
+#: includes/Models/Refund.php:107
+#, php-format
 msgid "Return to order no. %s"
 msgstr "Wróć do zamówienia nr %s"
 
-#: includes/Gateways/Blik/Gateway.php:317
+#: templates/multicurrency_content.php:63
+msgid "Save"
+msgstr "Zapisz"
+
+#: includes/Gateways/Blik/Gateway.php:240
 msgid "Save blik alias for future payments"
 msgstr "Zapisz alias BLIK do przyszłych płatności"
 
-#: includes/Gateways/Card/Gateway.php:325
+#: includes/Gateways/Card/Gateway.php:324
 msgid "Save card reference for future payments"
 msgstr "Zapisz referencję karty do przyszłych płatności"
 
@@ -1365,7 +1451,12 @@ msgstr "Zapisz referencję karty do przyszłych płatności"
 msgid "Save changes"
 msgstr "Zapisz zmiany"
 
+#: templates/multicurrency_content.php:20
+msgid "Select"
+msgstr "Wybierz"
+
 #: templates/multicurrency/content.php:15
+#: templates/multicurrency_content.php:16
 msgid "Select currency"
 msgstr "Wybierz walutę"
 
@@ -1373,9 +1464,21 @@ msgstr "Wybierz walutę"
 msgid "Select other currency"
 msgstr "Wybierz inną walutę"
 
-#: includes/Gateways/Online_Payments/Gateway.php:99
+#: includes/Gateways/Online_Payments/Gateway.php:93
 msgid "Select the feature methods"
 msgstr "Wybierz preferowane metody"
+
+#: includes/General/Settings.php:92
+msgid ""
+"Send admin new order notification right after order is created (before "
+"payment)."
+msgstr ""
+"Wyślij powiadomienie o nowym zamówieniu do administratora natychmiast po "
+"jego utworzeniu (przed opłaceniem)."
+
+#: includes/General/Settings.php:90
+msgid "Send new order email to admin"
+msgstr "Wyślij e-mail o nowym zamówieniu do administratora"
 
 #: templates/admin/order-details.php:14
 #: templates/admin/order-preview-details.php:7
@@ -1386,47 +1489,90 @@ msgstr "ID sesji"
 msgid "Settings"
 msgstr "Ustawienia"
 
+#: src/admin/general.js:218
+msgctxt "settings"
+msgid "Error while generating keys"
+msgstr "Błąd podczas generowania kluczy"
+
+#: src/admin/general.js:208
+msgctxt "settings"
+msgid "Generating..."
+msgstr "Generowanie..."
+
+#: src/admin/general.js:215
+msgctxt "settings"
+msgid "Keys generated successfully"
+msgstr "Klucze wygenerowane pomyślnie"
+
+#: src/admin/general.js:265
+msgctxt "settings"
+msgid "Settings are correct"
+msgstr "Ustawienia są poprawne"
+
+#: src/admin/general.js:268
+msgctxt "settings"
+msgid "Settings are incorrect"
+msgstr "Ustawienia są niepoprawne"
+
+#: src/admin/general.js:260
+msgctxt "settings"
+msgid "Testing..."
+msgstr "Testowanie..."
+
 #: includes/Encryption/Settings.php:47
 msgid "Settings for encrypt order IDs"
 msgstr "Ustawienia szyfrowania ID zamówień"
 
-#: includes/General/Settings.php:60
+#: includes/General/Settings.php:59 templates/multicurrency_content.php:41
+#: templates/multicurrency_content.php:80
 msgid "Shop ID"
 msgstr "ID sklepu"
 
-#: includes/Gateways/Online_Payments/Gateway.php:79
+#: includes/Installments/Settings.php:110
+msgid "Show as payment method"
+msgstr "Pokaż jako metodę płatności"
+
+#: includes/Installments/Settings.php:111
+msgid "Show as payment method on checkout"
+msgstr "Pokaż jako metodę płatności przy kasie"
+
+#: includes/Gateways/Online_Payments/Gateway.php:73
 msgid "Show available methods"
 msgstr "Pokaż dostępne metody"
 
-#: includes/Gateways/Online_Payments/Gateway.php:80
+#: includes/Gateways/Online_Payments/Gateway.php:74
 msgid "Show available methods in checkout under this payment option"
 msgstr "Pokaż dostępne metody płatności przy kasie pod tą opcją płatności"
 
-#: includes/Installments/Settings.php:99
+#: includes/Installments/Settings.php:101
 msgid "Show Installments widget on checkout page under shipping details"
 msgstr "Pokaż widżet rat na stronie kasy pod danymi wysyłkowymi"
 
-#: includes/Installments/Settings.php:67
+#: includes/Installments/Settings.php:61
 msgid "Show Installments widget on product page"
 msgstr "Pokaż widżet rat na stronie produktu"
 
-#: includes/Installments/Settings.php:98
+#: includes/Installments/Settings.php:100
 msgid "Show on checkout"
 msgstr "Pokaż przy kasie"
 
-#: includes/Installments/Settings.php:66
+#: includes/Installments/Settings.php:60
 msgid "Show on product"
 msgstr "Pokaż na produkcie"
 
-#: includes/Installments/Settings.php:57
+#: includes/Installments/Settings.php:52
 msgid "Show simulator"
 msgstr "Pokaż symulator"
 
-#: includes/Gateways/Online_Payments/Gateway.php:72
+#: includes/Gateways/Online_Payments/Gateway.php:68
 msgid "Show two popular payment methods and count of additional"
 msgstr "Pokaż dwie popularne metody płatności i liczbę dodatkowych"
 
-#: includes/Gateways/Online_Payments/Gateway.php:86
+#: src/admin/multi-currency.js:164
+msgid "Some error occured"
+msgstr "Wystąpił nieznany błąd"
+
+#: includes/Gateways/Online_Payments/Gateway.php:80
 msgid ""
 "Sort and select the featured. Featured methods will automatically be shown "
 "at the beginning"
@@ -1448,7 +1594,7 @@ msgstr ""
 msgid "Status"
 msgstr "Status"
 
-#: includes/Gateways/Card/Gateway.php:141
+#: includes/Gateways/Card/Gateway.php:134
 msgid "Styling options"
 msgstr "Opcje stylizacji"
 
@@ -1461,7 +1607,7 @@ msgstr "Anuluj"
 msgid "Subscription cannot be cancelled"
 msgstr "Subskrypcji nie można anulować"
 
-#: includes/Subscriptions/Settings.php:30
+#: includes/Subscriptions/Settings.php:24
 msgid "Subscription configuration"
 msgstr "Konfiguracja subskrypcji"
 
@@ -1469,7 +1615,7 @@ msgstr "Konfiguracja subskrypcji"
 msgid "Subscription P24"
 msgstr "Subskrypcja P24"
 
-#: includes/Subscriptions/Manager.php:62
+#: includes/Subscriptions/Manager.php:59
 msgid ""
 "Subscription Przelewy24 requires <strong>Przelewy24 - Card payment</strong> "
 "to be enabled"
@@ -1481,7 +1627,7 @@ msgstr ""
 msgid "Subscription renew order"
 msgstr "Odnowienie subskrypcji"
 
-#: includes/Subscriptions/Settings.php:37
+#: includes/Subscriptions/Settings.php:31
 msgid "Subscription Setup Guide"
 msgstr "Przewodnik konfiguracji subskrypcji"
 
@@ -1489,7 +1635,7 @@ msgstr "Przewodnik konfiguracji subskrypcji"
 msgid "Subscription was successfully cancelled"
 msgstr "Subskrypcja została pomyślnie anulowana"
 
-#: includes/Subscriptions/Settings.php:22
+#: includes/Subscriptions/Settings.php:16
 msgid "Subscriptions"
 msgstr "Płatności subskrypcyjne"
 
@@ -1501,16 +1647,16 @@ msgstr "Subskrypcje P24"
 msgid "Suspended"
 msgstr "Zawieszone"
 
-#: includes/General/Settings.php:48 includes/General/Settings.php:50
-#: templates/wizard/wizard.php:61
+#: includes/General/Settings.php:47 includes/General/Settings.php:49
+#: templates/wizard/wizard.php:62
 msgid "Test - sandbox"
 msgstr "Test - sandbox"
 
-#: includes/General/Settings.php:82
+#: includes/General/Settings.php:81
 msgid "Test connection"
 msgstr "Test połączenia"
 
-#: includes/General/Settings.php:77
+#: includes/General/Settings.php:76
 msgid ""
 "The CRC key and the API key are the neccessary configuration data needed for "
 "connection with the P24 system. You can find them in the P24 Transaction "
@@ -1527,7 +1673,7 @@ msgstr ""
 "pobrania/gotowe-wtyczki/woocommerce/helper/pl_p24_setting-api_key.png\" "
 "alt=\"Klucz API\" style=\"max-width: 400px\">"
 
-#: includes/General/Settings.php:69
+#: includes/General/Settings.php:68
 msgid ""
 "The CRC key and the API key are the neccessary configuration data needed for "
 "connection with the P24 system. You can find them in the P24 Transaction "
@@ -1544,7 +1690,7 @@ msgstr ""
 "pobrania/gotowe-wtyczki/woocommerce/helper/pl_p24_setting-crc_key.png\" "
 "alt=\"Klucz CRC\" style=\"max-width: 400px\">"
 
-#: includes/Gateways/Online_Payments/Gateway.php:81
+#: includes/Gateways/Online_Payments/Gateway.php:75
 msgid ""
 "The customer will see a list of available methods (like bank transfer "
 "providers) to choose from before proceeding to the payment gateway."
@@ -1560,11 +1706,11 @@ msgstr "Wektor inicjalizacji używany z kluczem szyfrowania."
 msgid "The key used for encrypting."
 msgstr "Klucz używany do szyfrowania."
 
-#: includes/General/Settings.php:59 includes/Multicurrency/Settings.php:73
+#: includes/General/Settings.php:58 includes/Multicurrency/Settings.php:77
 msgid "The merchant ID given in the Przelewy24 system"
 msgstr "Identyfikator sprzedawcy nadany w systemie Przelewy24"
 
-#: includes/Subscriptions/Settings.php:44
+#: includes/Subscriptions/Settings.php:38
 msgid ""
 "The number of days before your product subscription expires for your renewal "
 "fee to be processed"
@@ -1574,6 +1720,7 @@ msgstr ""
 
 #. translators: 1: Old plugin name, 2: URL to the plugins page
 #: includes/Compatibility/Compatibility_Checker.php:29
+#, php-format
 msgid ""
 "The old version of the plug-in (<strong>%1$s</strong>) is running; for the "
 "new one to work properly, it must be deactivated. <a href=\"%2$s\">Go to "
@@ -1583,15 +1730,15 @@ msgstr ""
 "działała poprawnie, należy ją dezaktywować. <a href=\"%2$s\">Przejdź do "
 "wtyczek</a>"
 
-#: includes/Models/Refund.php:112 includes/Models/Refund.php:231
+#: includes/Models/Refund.php:117 includes/Models/Refund.php:236
 msgid "The order was successfully refunded"
 msgstr "Płatność za zamówienie została pomyślnie zwrócona"
 
-#: includes/Models/Refund.php:113
+#: includes/Models/Refund.php:118
 msgid "The refund is being processed"
 msgstr "Zwrot płatności jest w trakcie przetwarzania"
 
-#: includes/Gateways/Online_Payments/Gateway.php:93
+#: includes/Gateways/Online_Payments/Gateway.php:87
 msgid ""
 "This option allows you to highlight selected payment methods from the list "
 "of available options (e.g., BLIK, credit cards). You can also manage the "
@@ -1599,18 +1746,18 @@ msgid ""
 "highlighted payment method, they will be redirected directly to the provider "
 "of that payment method."
 msgstr ""
-"Ta opcja pozwala wyróżnić wybrane metody płatności z listy dostępnych opcji "
-"(np. BLIK, karty płatnicze). Możesz również zarządzać kolejnością "
-"wyświetlania wyróżnionych metod.<br />Gdy płatnik wybierze wyróżnioną metodę "
-"płatności, zostanie przekierowany bezpośrednio do dostawcy tej metody "
+"Opcja ta pozwala na wyróżnienie wybranych metod płatności z listy dostępnych "
+"opcji (np. BLIK, karty płatnicze). Można również zarządzać kolejnością "
+"wyświetlania wyróżnionych metod.<br /> Gdy płatnik wybierze podświetloną "
+"metodę płatności, zostanie przekierowany bezpośrednio do dostawcy tej metody "
 "płatności."
 
-#: templates/account/one-click-tab.php:77
+#: templates/account/one-click-tab.php:62
 msgid "This payment has a subscription attached to it"
 msgstr "Ta płatność jest powiązana z subskrypcją"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:267
-#: includes/Gateways/Google_Pay/Gateway.php:227
+#: includes/Gateways/Apple_Pay/Gateway.php:262
+#: includes/Gateways/Google_Pay/Gateway.php:221
 msgid "This payment method is unavailable, for this browser"
 msgstr "Ta metoda płatności jest niedostępna dla tej przeglądarki"
 
@@ -1632,11 +1779,11 @@ msgid "User"
 msgstr "Użytkownik"
 
 #: templates/account/one-click-tab.php:33
-#: templates/account/one-click-tab.php:64
+#: templates/account/one-click-tab.php:67
 #: templates/subscription/account-tab.php:30
 #: templates/subscription/account-tab.php:51
 msgid "Valid to"
-msgstr "Ważna do"
+msgstr "Data ważności"
 
 #: includes/Subscriptions/Export.php:46
 msgid "Valid to "
@@ -1646,24 +1793,30 @@ msgstr "Ważne do "
 msgid "Valid until"
 msgstr "Ważne do"
 
-#: includes/Multicurrency/Settings.php:143
-#: includes/Multicurrency/Settings.php:173
+#: includes/Multicurrency/Settings.php:147
+#: includes/Multicurrency/Settings.php:177
 msgid "Validation errors"
 msgstr "Błędy walidacji"
 
-#: includes/Gateways/Settings_Helper.php:35
+#: includes/Gateways/Settings_Helper.php:49
 msgid "Value of fee"
 msgstr "Wartość opłaty"
+
+#: templates/thankyou-status-loader.php:2
+msgid "We are verifying your payment status"
+msgstr "Weryfikujemy status płatności"
 
 #: templates/admin/template.php:22
 msgid "Welcome to Przelewy24"
 msgstr "Witamy w Przelewy24"
 
-#: includes/Installments/Settings.php:46
+#: includes/Installments/Settings.php:41
 msgid "Widget size options"
 msgstr "Opcje rozmiaru widżetu"
 
-#: includes/Gateways/Card/Gateway.php:149
+#. translators: %s: URL to the detailed documentation page
+#: includes/Gateways/Card/Gateway.php:144
+#, php-format
 msgid ""
 "Widget styling settings in JSON format, detailed documentation available <a "
 "href=\"%s\" target=\"_blank\">here</a>"
@@ -1675,7 +1828,7 @@ msgstr ""
 msgid "Wizard"
 msgstr "Kreator"
 
-#: templates/wizard/wizard.php:41
+#: templates/wizard/wizard.php:42
 msgctxt "wizard"
 msgid "Back to Admin panel"
 msgstr "Powrót do panelu administracyjnego"
@@ -1685,7 +1838,9 @@ msgctxt "wizard"
 msgid "Data import was successful"
 msgstr "Import danych zakończył się sukcesem"
 
-#: templates/wizard/wizard.php:32
+#. translators: %s: Name of the old plugin
+#: templates/wizard/wizard.php:33
+#, php-format
 msgctxt "wizard"
 msgid ""
 "For the plug-in to work correctly, the old version <strong>(%s)</strong> "
@@ -1694,32 +1849,32 @@ msgstr ""
 "Wykryto starą wersję wtyczki<strong>(%s)</strong>, która musi zostać "
 "dezaktywowana, aby nowa wersja działała poprawnie."
 
-#: templates/wizard/wizard.php:37
+#: templates/wizard/wizard.php:38
 msgctxt "wizard"
 msgid "Go to plugin settings"
 msgstr "Przejdź do ustawień wtyczki"
 
-#: templates/wizard/wizard.php:39
+#: templates/wizard/wizard.php:40
 msgctxt "wizard"
 msgid "Go to plugins list"
 msgstr "Przejdź do listy wtyczek"
 
-#: templates/wizard/wizard.php:47
+#: templates/wizard/wizard.php:48
 msgctxt "wizard"
 msgid "Import has failed"
 msgstr "Import nie powiódł się"
 
-#: templates/wizard/wizard.php:96
+#: templates/wizard/wizard.php:97
 msgctxt "wizard"
 msgid "Import multicurrency settings"
 msgstr "Import ustawień wielowalutowych"
 
-#: templates/wizard/wizard.php:119
+#: templates/wizard/wizard.php:120
 msgctxt "wizard"
 msgid "Import users saved credit cards references"
 msgstr "Import zapisanych referencji kart kredytowych użytkowników"
 
-#: templates/wizard/wizard.php:133
+#: templates/wizard/wizard.php:134
 msgctxt "wizard"
 msgid "Migrate"
 msgstr "Migruj"
@@ -1734,38 +1889,56 @@ msgctxt "wizard"
 msgid "Przelewy24 Payment Gateway"
 msgstr "Przelewy24 Payment Gateway"
 
-#: templates/wizard/wizard.php:136
+#: templates/wizard/wizard.php:137
 msgctxt "wizard"
 msgid "Skip migration"
 msgstr "Pomiń migrację"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:268
-#: includes/Gateways/Blik/Gateway.php:308
+#: includes/Compatibility/Compatibility_Checker.php:61
+msgid ""
+"WooCommerce is not active. Please activate WooCommerce to use the Przelewy24 "
+"Payment Gateway plugin."
+msgstr ""
+"WooCommerce nie jest aktywny. Aktywuj WooCommerce, aby korzystać z wtyczki "
+"Przelewy24 Payment Gateway."
+
+#: includes/Gateways/Blik/Gateway.php:80
+msgid "You can find the BLIK code in your banking app"
+msgstr "Kod BLIK znajdziesz w aplikacji swojego banku"
+
+#: includes/Gateways/Apple_Pay/Gateway.php:263
+#: includes/Gateways/Blik/Gateway.php:231
 #: includes/Gateways/Card/Gateway.php:331
-#: includes/Gateways/Google_Pay/Gateway.php:228
-#: includes/Gateways/Online_Payments/Gateway.php:177
+#: includes/Gateways/Google_Pay/Gateway.php:222
+#: includes/Gateways/Online_Payments/Gateway.php:171
 #: includes/Gateways/Online_Payments/Online_Payments_Legacy_Support.php:40
 #: includes/Gateways/Virtual_Gateway/Virtual_Gateway_Legacy_Support.php:40
-#: includes/Gateways/Virtual_Gateway/Virtual_Gateway_Legacy_Support.php:54
+#: includes/Gateways/Virtual_Gateway/Virtual_Gateway_Legacy_Support.php:55
 msgid "You have to accept the terms and conditions for using the chosen method"
 msgstr "Musisz zaakceptować regulamin, aby skorzystać z wybranej metody"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:150
+#: includes/Gateways/Apple_Pay/Gateway.php:144
 msgid "Your Apple merchant ID"
 msgstr "Twój identyfikator sprzedawcy Apple (merchant ID)"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:144
+#: includes/Gateways/Apple_Pay/Gateway.php:138
 msgid "Your Apple merchant name, visible for customer"
 msgstr "Twoja nazwa sprzedawcy Apple, widoczna dla klienta"
 
-#: includes/Gateways/Google_Pay/Gateway.php:125
+#: includes/Gateways/Google_Pay/Gateway.php:118
 msgid "Your Google merchant ID"
 msgstr "Identyfikator sprzedawcy Google"
 
-#: includes/Gateways/Google_Pay/Gateway.php:131
+#: includes/Gateways/Google_Pay/Gateway.php:124
 msgid "Your Google merchant name, visible for customer"
 msgstr "Nazwa sprzedawcy Google widoczna dla klienta"
 
-#: includes/Gateways/Apple_Pay/Gateway.php:157
+#: templates/thankyou-status-loader.php:3
+msgid "Your payment is being processed. Please do not close this page."
+msgstr ""
+"Twoja płatność jest przetwarzana. Nie zamykaj tej strony. Może to potrwać "
+"kilka sekund."
+
+#: includes/Gateways/Apple_Pay/Gateway.php:151
 msgid "Your shop domain"
 msgstr "Domena Twojego sklepu"

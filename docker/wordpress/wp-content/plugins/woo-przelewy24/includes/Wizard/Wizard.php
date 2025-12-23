@@ -19,7 +19,7 @@ class Wizard
         add_action('admin_menu', [$this, 'add_wizard_page']);
 
         Assets::add_style_asset('p24-wizard', 'bootstrap.min.css', true, function () {
-            $page = $_GET['page'] ?? null;
+            $page = $_GET['page'] ?? '';
             return $page === self::WIZARD_PAGE_ID;
         });
     }
@@ -43,7 +43,7 @@ class Wizard
 
     public function add_wizard_page()
     {
-        add_submenu_page(null, __('Przelewy24 wizard', 'woocommerce-p24'), '', 'manage_options', self::WIZARD_PAGE_ID, [$this, 'render']);
+        add_submenu_page('', __('Przelewy24 wizard', 'woocommerce-p24'), '', 'manage_options', self::WIZARD_PAGE_ID, [$this, 'render']);
     }
 
     public function render()
@@ -60,7 +60,7 @@ class Wizard
             'go_to_settings' => Core::get_settings_url(),
             'go_to_plugins' => Compatibility_Checker::get_filtered_plugins_url(),
             'old_plugin' => Compatibility_Checker::get_old_plugin_info(),
-            'logo_url' => WC_P24_PLUGIN_URL . '/assets/logo-full.svg',
+            'logo_url' => WC_P24_PLUGIN_URL . 'assets/logo-full.svg',
             'old_exist' => Back_Compatibility_Manager::old_version_installed(),
             'action' => self::get_url('submit'),
             'settings' => $manager->settings->get_settings(),

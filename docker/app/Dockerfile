@@ -1,15 +1,14 @@
-FROM node:23.5.0 AS node
-FROM dunglas/frankenphp:1.3.6-builder-php8.3.15
+FROM composer:2 AS composer
+FROM node:25.1.0 AS node
 
-COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
-COPY --from=node /usr/local/bin/node /usr/local/bin/node
-RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
+FROM dunglas/frankenphp:1.9.1-builder-php8.4.14
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nano \
     supervisor \
     zip \
     unzip \
-    npm
+    && rm -rf /var/lib/apt/lists/*
 
 RUN install-php-extensions \
     gd \
@@ -18,7 +17,12 @@ RUN install-php-extensions \
     pdo_mysql \
     redis
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
+COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+
+RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 
 WORKDIR /var/www
 

@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-
+Route::get('/cart/state', [CartController::class, 'state'])->name('cart.state');
 Route::post('/cart/add-item', [CartController::class, 'addItem'])->name('cart.add-item');
 Route::post('/cart/remove-item', [CartController::class, 'removeItem'])->name('cart.remove-item');
 Route::post('/cart/update-item', [CartController::class, 'updateItem'])->name('cart.update-item');
@@ -36,6 +36,7 @@ Route::get('/products/{product}', [ProductController::class, 'show'])->name('pro
 Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
 
 Route::get('/account', [AccountController::class, 'index'])->name('account.index');
+Route::get('/account/state', [AccountController::class, 'state'])->name('account.state');
 
 Route::get('/login', [LoginController::class, 'index'])->name('login.index');
 Route::post('/login', [LoginController::class, 'store'])->name('login.store');

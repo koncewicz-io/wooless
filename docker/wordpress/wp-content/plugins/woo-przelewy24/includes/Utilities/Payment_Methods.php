@@ -23,8 +23,9 @@ class Payment_Methods
     const APPLE_PAY_ALT = [232, 239, 252, 253];
     const P24_INSTALLMENTS = 303;
     const EXCLUDED_METHODS = [181];
+    const CLICK_TO_PAY_METHODS = [241, 242];
 
-    public static $cache = [];
+    public static $already_requested = [];
 
     private static function get_groups(array $methods): array
     {
@@ -41,6 +42,17 @@ class Payment_Methods
         });
 
         return array_values($available);
+    }
+
+    public static function get_available_methods(): array
+    {
+        if (empty($methods = get_transient('_p24_available_methods'))) {
+            $methods = self::get_payment_methods();
+            // Cached array of available methods for 24 hours only for initial create Virtual Gateways, they are filtered later in Gateways_Manages/filter_gateways.php depends on cart value
+            !empty($methods) && set_transient('_p24_available_methods', $methods, 60 * 60 * 24);
+        }
+
+        return $methods;
     }
 
     public static function get_popular_methods_icons(array $available_methods): array
@@ -71,17 +83,21 @@ class Payment_Methods
         return ['src' => $method['imgUrl'], 'name' => $method['name'], 'id' => $method['id'], 'type' => $method['group']];
     }
 
-    public static function get_payment_methods(int $value, string $currency): array
+    public static function get_payment_methods(?int $value = null, ?string $currency = null): array
     {
-        if (isset(self::$cache[$value . '_' . $currency])) {
-            return self::$cache[$value . '_' . $currency];
+        $request_key = $value . '_' . $currency;
+
+        if (!empty(self::$already_requested[$request_key])) {
+            return self::$already_requested[$request_key];
         }
 
         $client = new Payment_Methods_Resource();
         $methods = $client->get_payment_methods($value, $currency);
         $methods = $methods['data'] ?? [];
 
-        self::$cache[$value . '_' . $currency] = $methods;
+        if (!empty($methods)) {
+            self::$already_requested[$request_key] = $methods;
+        }
 
         return $methods;
     }
@@ -106,8 +122,7 @@ class Payment_Methods
 
         $featured = array_filter(explode(',', $matches[1]));
         $methods_by_id = array_combine(array_column($methods, 'id'), $methods);
-        $all = str_replace(':', ',', $matches[0]);
-        $merge_all = array_merge(explode(',', $all), array_keys($methods_by_id));
+        $merge_all = array_merge(explode(',', $matches[2] ?? ''), array_keys($methods_by_id));
         $order = array_unique(array_filter($merge_all));
 
         return array_values(array_filter(array_map(function ($id) use ($methods_by_id, $featured) {
@@ -121,4 +136,17 @@ class Payment_Methods
             return $item;
         }, $order)));
     }
+    public static function get_group_name($method_id): string
+    {
+        $available_methods = self::get_available_methods();
+
+        foreach ($available_methods as $method) {
+            if ((int)$method['id'] === (int)$method_id) {
+                return $method['group'] ?? 'Other';
+            }
+        }
+
+        return 'Other';
+    }
+
 }

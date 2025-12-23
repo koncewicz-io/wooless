@@ -27,12 +27,16 @@ trait Payment_Helpers
 
     public function get_title(): string
     {
-        if (is_admin() && get_current_screen()->post_type == 'shop_order') {
-            return $this->method_title;
+        if (is_admin()) {
+            $screen = get_current_screen();
+            if ($screen && $screen->post_type === 'shop_order') {
+                return $this->method_title;
+            }
         }
 
         return parent::get_title();
     }
+
 
     public function get_transaction_url($order): string
     {
@@ -50,9 +54,13 @@ trait Payment_Helpers
     {
         $transaction = new Transaction($order_id, $method ?? $this->method, $accept_rules);
         $transaction->register();
+        $return_url = get_post_meta($order_id, '_p24_return_url', true);
 
-        return ['result' => 'success', 'redirect' => $transaction->get_paywall_url()];
-    }
+        return [
+            'result'    => 'success',
+            'redirect'  => $transaction->get_paywall_url(),
+            'wl_return' => $return_url
+        ];    }
 
     public function process_on_payment_url($order_id): array
     {

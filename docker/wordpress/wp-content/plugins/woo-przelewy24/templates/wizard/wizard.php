@@ -29,6 +29,7 @@
                 <?= _x('Data import was successful', 'wizard', 'woocommerce-p24') ?>
 
                 <p class="text-sm">
+                    <?php /* translators: %s: Name of the old plugin */ ?>
                     <?= sprintf(_x('For the plug-in to work correctly, the old version <strong>(%s)</strong> must be deactivated.', 'wizard', 'woocommerce-p24'), $old_plugin['Name']) ?>
                 </p>
 

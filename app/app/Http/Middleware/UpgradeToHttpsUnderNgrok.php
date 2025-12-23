@@ -11,7 +11,7 @@ class UpgradeToHttpsUnderNgrok
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $allowedDomains = ['.ngrok.app', '.ngrok-free.app'];
+        $allowedDomains = ['.ngrok.app', '.ngrok-free.app', '.ngrok-free.dev'];
 
         if (array_filter($allowedDomains, fn($domain) => str_ends_with($request->getHost(), $domain))) {
             URL::forceScheme('https');

@@ -13,6 +13,7 @@ use WC_P24\Gateways\General_Webhooks;
 use WC_P24\Helper;
 use WC_P24\Models\Simple\Refund_Notification;
 use WC_P24\Render;
+use WC_P24\Utilities\Encryption;
 
 class Refund
 {
@@ -91,14 +92,18 @@ class Refund
 
     private function get_refund_data(): array
     {
+        $parts = [Helper::get_transaction_prefix(), Encryption::generate_session_id($this->order_id)];
+        $refundsUuid = substr(implode('_', $parts), 0, 35);
+
         return [
             'requestId' => $this->request_id,
-            'refundsUuid' => wp_generate_uuid4(),
+            'refundsUuid' => $refundsUuid,
             'refunds' => [
                 [
                     'orderId' => $this->order_id,
                     'sessionId' => $this->session_id,
                     'amount' => $this->amount,
+                    /* translators: %s: Order number */
                     'description' => sprintf(__('Return to order no. %s', 'woocommerce-p24'), $this->order->get_order_number()),
                 ]
             ],
@@ -238,23 +243,35 @@ class Refund
                 'refund_payment' => false
             ];
 
+            $line_items = [];
+            foreach ($this->order->get_items() as $item_id => $item) {
+                if ((float) $item->get_total() === Helper::to_higher_unit($notification->amount)) {
+                    $line_items[$item_id] = [
+                        'qty'          => $item->get_quantity(),
+                        'refund_total' => $item->get_total(),
+                        'refund_tax'   => [], // add tax refunds if necessary
+                    ];
+                    break;
+                }
+            }
+
+            if (!empty($line_items)) {
+                $attributes['line_items'] = $line_items;
+            }
+
             if ($reason) {
                 $attributes['reason'] = $reason;
             }
 
             $status = wc_create_refund($attributes);
         }
-
         // When not success
         if ($notification->status > 0 || $status instanceof \WP_Error) {
             $message = $this->refund_notes()[$notification->status] ?: __('Refund was rejected', 'woocommerce-p24');
             $this->order->add_order_note($message);
         }
-
         // Always remove temporary metadata
         $this->remove_pending_refund($notification->request_id);
-
         $this->order->save();
-
     }
 }

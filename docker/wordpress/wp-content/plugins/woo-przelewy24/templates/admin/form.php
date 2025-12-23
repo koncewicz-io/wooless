@@ -24,7 +24,7 @@
             <?php elseif ($field['type'] == 'hidden'): ?>
                 <input type="hidden" value="<?= $field['value'] ?>" <?= $field['attributes_html'] ?>/>
             <?php else: ?>
-                <div class="p24-ui-form__row" data-id="<?= $field['id'] ?>">
+                <div class="p24-ui-form__row<?= $field['hide'] ? ' hidden' : '' ?>" data-id="<?= $field['id'] ?>">
                     <?php if ($field['title']): ?>
                         <label for="<?= $field['id'] ?>" class="p24-ui-form__title">
                             <span><?= esc_html($field['title']) ?></span>

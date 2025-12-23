@@ -15,9 +15,13 @@ use WC_P24\Utilities\Validator;
 
 class Settings extends Module_Settings
 {
-    public function __construct()
+    public function __construct($without_hooks = false)
     {
-        parent::__construct();
+        parent::__construct($without_hooks);
+
+        if ($without_hooks) {
+            return;
+        }
 
         Ajax::add_action('save_currency', [$this, 'save_currency']);
         Ajax::add_action('remove_currency', [$this, 'remove_currency']);
@@ -47,7 +51,7 @@ class Settings extends Module_Settings
                 'id' => Multicurrency::ENABLE_KEY,
                 'type' => 'checkbox',
                 'desc' => __('Enable multicurrency module', 'woocommerce-p24'),
-                'info' => '<h3><svg class="p24-ui-icon" style="width:22px;"><use href="#p24-icon-info"></use></svg> '.__('Adding a Currency Switcher Button', 'woocommerce-p24').'</h3> '.__('<p>To add a currency switcher button to your website, use the pre-made block called <strong>"Przelewy24 - Multi Currency Switcher"</strong>.</p><img src="https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-wtyczki/woocommerce/helper/en_p24_multicurrency1.png" alt="Adding a Currency Switcher Button" style="max-width: 400px"><br /><p>You can also use the shortcode named <strong><code>[p24_multicurrency_switcher]</code></strong>.</p><img src="https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-wtyczki/woocommerce/helper/en_p24_multicurrency2.png" alt="Adding a Currency Switcher Button" style="max-width: 400px"><br /><br /><em>Example view for the buyer:</em><br/><img src="https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-wtyczki/woocommerce/helper/en_p24_multicurrency3.png" alt="Adding a Currency Switcher Button" style="max-width: 400px">', 'woocommerce-p24'),
+                'info' => '<h3><svg class="p24-ui-icon" style="width:22px;"><use href="#p24-icon-info"></use></svg> ' . __('Adding a Currency Switcher Button', 'woocommerce-p24') . '</h3> ' . __('<p>To add a currency switcher button to your website, use the pre-made block called <strong>"Przelewy24 - Multi Currency Switcher"</strong>.</p><img src="https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-wtyczki/woocommerce/helper/en_p24_multicurrency1.png" alt="Adding a Currency Switcher Button" style="max-width: 400px"><br /><p>You can also use the shortcode named <strong><code>[p24_multicurrency_switcher]</code></strong>.</p><img src="https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-wtyczki/woocommerce/helper/en_p24_multicurrency2.png" alt="Adding a Currency Switcher Button" style="max-width: 400px"><br /><br /><em>Example view for the buyer:</em><br/><img src="https://www.przelewy24.pl/storage/app/media/do-pobrania/gotowe-wtyczki/woocommerce/helper/en_p24_multicurrency3.png" alt="Adding a Currency Switcher Button" style="max-width: 400px">', 'woocommerce-p24'),
                 'default' => 'no'
             ],
             [

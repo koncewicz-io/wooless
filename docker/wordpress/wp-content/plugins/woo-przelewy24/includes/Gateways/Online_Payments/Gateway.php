@@ -11,6 +11,7 @@ use WC_P24\Gateways\Fee;
 use WC_P24\Gateways\Gateways_Manager;
 use WC_P24\Gateways\Payment_Helpers;
 use WC_P24\Gateways\Settings_Helper;
+use WC_P24\Installments\Installments;
 use WC_P24\Utilities\Base_Gateway_Block;
 use WC_P24\Utilities\Payment_Methods;
 use WC_Payment_Gateway;
@@ -24,27 +25,22 @@ class Gateway extends WC_Payment_Gateway
     public function __construct()
     {
         $this->id = Core::MAIN_METHOD;
-        $this->icon = apply_filters('woocommerce_gateway_icon', WC_P24_PLUGIN_URL . '/assets/logo-small.png');
-
-        $this->method_title = __('Przelewy24 - online payments', 'woocommerce-p24');
-        $this->method_description = sprintf(__('Payment option directing the user to a payment gateway <br /><a href="%s">General configuration</a>', 'woocommerce-p24'), Core::get_settings_url());
+        $this->icon = apply_filters('woocommerce_gateway_icon', WC_P24_PLUGIN_URL . 'assets/logo-small.png');
 
         $this->has_fields = $this->get_option('show_available_methods') == 'yes';
-        $this->title = $this->get_option('title') ?: __('Pay with Przelewy24', 'woocommerce-p24');
         $this->description = $this->get_option('description');
         $this->supports = ['products', 'refunds'];
-
-        $this->init_form_fields();
+        $this->method_title = __('Przelewy24 - online payments', 'woocommerce-p24');
+        /* translators: %s: URL to the general configuration page */
+        $this->method_description = sprintf(__('Payment option directing the user to a payment gateway <br /><a href="%s">General configuration</a>', 'woocommerce-p24'), Core::get_settings_url());
+        $this->title = $this->get_option('title') ?: __('Pay with Przelewy24', 'woocommerce-p24');
 
         new Fee($this);
 
         add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
         add_action('woocommerce_after_checkout_validation', [$this, 'legacy_checkout_validation'], 10, 2);
-    }
 
-    public function block_support(): Base_Gateway_Block
-    {
-        return new Online_Payments_Block($this);
+        $this->init_form_fields();
     }
 
     public function init_form_fields()
@@ -71,36 +67,33 @@ class Gateway extends WC_Payment_Gateway
                 'type' => 'checkbox',
                 'label' => __('Show two popular payment methods and count of additional', 'woocommerce-p24'),
                 'default' => 'no'
-            ]],
-            $this->fee_settings(),
-            [
-                'show_available_methods' => [
-                    'type' => 'checkbox',
-                    'title' => __('Show available methods', 'woocommerce-p24'),
-                    'label' => __('Show available methods in checkout under this payment option', 'woocommerce-p24'),
-                    'description' => __('The customer will see a list of available methods (like bank transfer providers) to choose from before proceeding to the payment gateway.', 'woocommerce-p24'),
-                    'default' => 'no'
-                ],
-                'methods' => [
-                    'type' => 'methods',
-                    'description' => __('Sort and select the featured. Featured methods will automatically be shown at the beginning', 'woocommerce-p24'),
-                    'default' => 'no'
-                ],
-                'feature_as_gateway' => [
-                    'type' => 'checkbox',
-                    'title' => __('Highlighted Payment Methods', 'woocommerce-p24'),
-                    'label' => __('Highlight Payment Methods in Checkout', 'woocommerce-p24'),
-                    'description' => __('This option allows you to highlight selected payment methods from the list of available options (e.g., BLIK, credit cards). You can also manage the display order of the highlighted methods.<br /> When a payer selects a highlighted payment method, they will be redirected directly to the provider of that payment method.', 'woocommerce-p24'),
-                    'default' => 'no'
-                ],
-                'gateway_methods' => [
-                    'type' => 'methods',
-                    'label' => __('Featured methods as gateway in checkout', 'woocommerce-p24'),
-                    'description' => __('Select the feature methods', 'woocommerce-p24'),
-                    'default' => 'no'
-                ],
-            ]
-        );
+            ],
+            'show_available_methods' => [
+                'type' => 'checkbox',
+                'title' => __('Show available methods', 'woocommerce-p24'),
+                'label' => __('Show available methods in checkout under this payment option', 'woocommerce-p24'),
+                'description' => __('The customer will see a list of available methods (like bank transfer providers) to choose from before proceeding to the payment gateway.', 'woocommerce-p24'),
+                'default' => 'no'
+            ],
+            'methods' => [
+                'type' => 'methods',
+                'description' => __('Sort and select the featured. Featured methods will automatically be shown at the beginning', 'woocommerce-p24'),
+                'default' => 'no'
+            ],
+            'feature_as_gateway' => [
+                'type' => 'checkbox',
+                'title' => __('Highlighted Payment Methods', 'woocommerce-p24'),
+                'label' => __('Highlight Payment Methods in Checkout', 'woocommerce-p24'),
+                'description' => __('This option allows you to highlight selected payment methods from the list of available options (e.g., BLIK, credit cards). You can also manage the display order of the highlighted methods.<br /> When a payer selects a highlighted payment method, they will be redirected directly to the provider of that payment method.', 'woocommerce-p24'),
+                'default' => 'no'
+            ],
+            'gateway_methods' => [
+                'type' => 'methods',
+                'label' => __('Featured methods as gateway in checkout', 'woocommerce-p24'),
+                'description' => __('Select the feature methods', 'woocommerce-p24'),
+                'default' => 'no'
+            ],
+        ], $this->fee_settings());
     }
 
     public function get_featured_methods(): array
@@ -112,7 +105,7 @@ class Gateway extends WC_Payment_Gateway
             $featured_methods_order = $this->get_option('gateway_methods');
 
             if ($feature_payments) {
-                $methods = Gateways_Manager::get_available_methods();
+                $methods = Payment_Methods::get_available_methods();
                 $featured = Payment_Methods::prepare_methods($methods, $featured_methods_order);
             }
         }
@@ -145,6 +138,8 @@ class Gateway extends WC_Payment_Gateway
             $featured = Payment_Methods::prepare_methods($methods, $featured_methods_order, true);
         }
 
+        Installments::add_as_gateway_in_block($fetch_methods, $featured);
+
         if ($show_short_info) {
             $methods_icons = Payment_Methods::get_popular_methods_icons($methods);
             $additional = apply_filters('przelewy24_available_method_additional', count($methods) - count($methods_icons), $methods_icons, $methods);
@@ -158,19 +153,18 @@ class Gateway extends WC_Payment_Gateway
                 'show' => $show_methods,
                 'items' => $methods,
                 'featured' => array_filter($methods, function ($method) {
-                    return $method['featured'];
+                    return isset($method['featured']) && $method['featured'];
                 }),
                 'rest' => array_filter($methods, function ($method) {
-                    return !$method['featured'];
+                    return isset($method['featured']) && !$method['featured'];
                 })
             ],
-            'featured' => array_values(array_filter($featured, function ($method) {
-                return $method['featured'];
-            })),
+            'featured' => $featured,
             'info' => [
                 'show' => $show_short_info,
                 'additional' => $additional,
                 'icons' => $methods_icons,
+                'icon' => $this->icon,
             ],
             'i18n' => [
                 'error' => [
@@ -178,7 +172,8 @@ class Gateway extends WC_Payment_Gateway
                 ],
                 'label' => [
                     'submit' => __('Pay with Przelewy24', 'woocommerce-p24'),
-                    'regulation' => sprintf(__('I hereby state that I have read the <a href="%s" target="_blank">regulations</a> and <a href="%s" target="_blank">information obligation</a> of "Przelewy24"', 'woocommerce-p24'), Core::get_rules_url(), Core::get_tos_url()),
+                    /* translators: %1$s: URL to the regulations page, %2$s: URL to the information obligation page */
+                    'regulation' => sprintf(__('I hereby state that I have read the <a href="%1$s" target="_blank">regulations</a> and <a href="%2$s" target="_blank">information obligation</a> of "Przelewy24"', 'woocommerce-p24'), Core::get_rules_url(), Core::get_tos_url()),
                 ]
             ]
         ];

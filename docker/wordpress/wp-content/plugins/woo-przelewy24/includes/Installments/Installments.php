@@ -3,8 +3,11 @@
 namespace WC_P24\Installments;
 
 use WC_P24\Config;
+use WC_P24\Gateways\Gateways_Manager;
+use WC_P24\Gateways\Virtual_Gateway;
 use WC_P24\Utilities\Encryption;
 use WC_P24\Utilities\Module;
+use WC_P24\Utilities\Payment_Methods;
 
 class Installments extends Module
 {
@@ -17,7 +20,7 @@ class Installments extends Module
 
         add_action('init', [$this, 'registerBlock']);
 
-        if (self::show_widget_on_checkout()) {
+        if (self::show_widget_on_checkout() && (!WC()->cart || WC()->cart->total >= self::get_min_product_price())) {
             add_action('woocommerce_blocks_loaded', [$this, 'wooBlocks']);
         }
 
@@ -47,6 +50,11 @@ class Installments extends Module
     static function show_widget_on_product(): bool
     {
         return get_option(self::PREFIX . 'show_widget_on_product', 'no') === 'yes';
+    }
+
+    static function show_as_payment_method(): bool
+    {
+        return get_option(self::PREFIX . 'show_as_payment_method', 'no') === 'yes';
     }
 
     static function get_min_product_price(): ?int
@@ -97,5 +105,37 @@ class Installments extends Module
 
     protected function on_admin(): void
     {
+    }
+
+    public static function add_as_gateway(): void
+    {
+        if (self::is_enabled() and self::show_as_payment_method()) {
+            $filtered = array_filter(Payment_Methods::get_available_methods(), function ($method) {
+                return $method['id'] == Payment_Methods::P24_INSTALLMENTS;
+            });
+
+            $method = array_shift($filtered);
+
+            if (!empty($method)) {
+                Gateways_Manager::$extra_gateways[] = new Virtual_Gateway\Gateway($method['id'], $method['name'], $method['mobileImgUrl']);
+            }
+        }
+    }
+
+    public static function add_as_gateway_in_block($fetch_methods, &$featured): void
+    {
+        if (self::is_enabled() && self::show_as_payment_method()) {
+            $methods = $fetch_methods ? Gateways_Manager::get_available_methods() : [];
+
+            $installmentGateway = array_values(array_filter($methods, function ($gateway) {
+                return $gateway['id'] == Payment_Methods::P24_INSTALLMENTS;
+            }));
+
+            if (isset($installmentGateway[0])) {
+                $gateway = $installmentGateway[0];
+                $gateway['featured'] = true;
+                $featured = array_merge($featured, [$gateway]);
+            }
+        }
     }
 }

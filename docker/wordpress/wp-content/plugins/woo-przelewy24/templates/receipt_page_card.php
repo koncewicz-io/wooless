@@ -44,5 +44,12 @@ use WC_P24\Render;
     </button>
 </form>
 
+<div id="p24-3ds-modal" class="p24-3ds-modal hidden fixed inset-0 z-50 bg-black bg-opacity-60 flex items-center justify-center">
+    <div class="modal-content">
+        <div id="p24-3ds-iframe-wrapper"></div>
+    </div>
+</div>
+
+
 <script>window._config = <?= json_encode($config) ?></script>
 <script src="<?= WC_P24_PLUGIN_URL . 'assets/js/card-receipt.bundle.js' ?>"></script>

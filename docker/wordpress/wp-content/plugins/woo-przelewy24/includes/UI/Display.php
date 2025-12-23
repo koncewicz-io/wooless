@@ -49,7 +49,8 @@ class Display
                 'options' => [],
                 'before' => '',
                 'after' => '',
-                'info' => ''
+                'info' => '',
+                'hide' => false
             ];
 
             $value = null;
@@ -100,7 +101,7 @@ class Display
             }
 
             if ($field['type'] == 'methods') {
-                $methods = Payment_Methods::get_payment_methods(1000, 'PLN');
+                $methods = Payment_Methods::get_payment_methods();
                 $field['methods'] = Payment_Methods::prepare_methods($methods, $value ?? [], true);
             }
 
@@ -115,14 +116,12 @@ class Display
 
     public function render($before_form = '', $after_form = '')
     {
-        $back_office = new Back_Office();
-
         Render::template('admin/template', [
-            'logo_url' => WC_P24_PLUGIN_URL . '/assets/logo-full.svg',
+            'logo_url' => WC_P24_PLUGIN_URL . 'assets/logo-full.svg',
             'icons' => array_map(function ($image) {
-                return WC_P24_PLUGIN_URL . '/assets/svg/' . $image;
+                return WC_P24_PLUGIN_URL . 'assets/svg/' . $image;
             }, ['blik.svg', 'mastercard.svg', 'paypo.svg', 'visa.svg', 'apple-pay.svg', 'google-pay.svg']),
-            'banner' => $back_office->get_banner(),
+            'banner' => Back_Office::get_banner(),
             'fields' => $this->fields,
             'menu' => $this->menu->items,
             'before_form' => $before_form,

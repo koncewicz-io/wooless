@@ -14,7 +14,9 @@ class User_Data
             $ip_address = $_SERVER['HTTP_CLIENT_IP'];
         }
 
-        return (string)$ip_address;
+        $ip_address = explode(', ', (string)$ip_address);
+
+        return $ip_address[0] ?? '';
     }
 
     public static function get_user_agent(): ?string

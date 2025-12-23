@@ -35,7 +35,9 @@ trait Card_Legacy_Support
         $result['orderId'] = $order_id;
         $result['orderKey'] = $order->get_order_key();
         $result['clickToPay']['email'] = $order->get_billing_email();
+        $result['redirect'] = $order->get_checkout_order_received_url();
 
         Render::template('receipt_page_card', ['config' => $result]);
     }
+
 }

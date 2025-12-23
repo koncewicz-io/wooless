@@ -53,7 +53,12 @@
                     </Link>
 
                     <div class="flex flex-1 items-center justify-end">
-                        <div class="lg:ml-4">
+                        <div v-if="loadingState" class="flex animate-pulse space-x-4">
+                            <div class="w-10 h-2 rounded-full bg-gray-200"></div>
+                            <div class="w-10 h-2 rounded-full bg-gray-200"></div>
+                        </div>
+
+                        <div v-if="!loadingState" class="lg:ml-4">
                             <Menu v-if="logged" as="div" class="relative inline-block text-left p-2">
                                 <div>
                                     <MenuButton class="flex items-center rounded-full text-gray-400 hover:text-gray-500 focus:outline-none">
@@ -80,13 +85,13 @@
                         </div>
 
                         <!-- Account -->
-                        <Link v-if="!logged" :href="route('account.index')" class="p-2 text-gray-400 hover:text-gray-500 lg:ml-4">
+                        <Link v-if="!logged && !loadingState" :href="route('account.index')" class="p-2 text-gray-400 hover:text-gray-500 lg:ml-4">
                             <span class="sr-only">Account</span>
                             <UserIcon class="size-6" aria-hidden="true" />
                         </Link>
 
                         <!-- Cart -->
-                        <div class="ml-4 flow-root lg:ml-6">
+                        <div v-if="!loadingState" class="ml-4 flow-root lg:ml-6">
                             <Link :href="route('cart.index')" class="group -m-2 flex items-center p-2">
                                 <ShoppingBagIcon class="size-6 shrink-0 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />
                                 <span class="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">{{ cart ? cart.items_count : 0 }}</span>
@@ -102,9 +107,9 @@
 
 <script setup>
 
-import { inject, ref } from "vue";
+import { inject, ref, onMounted, watch } from "vue";
 import { createI18n } from 'vue-i18n';
-import {Link, router, usePage} from "@inertiajs/vue3";
+import { Link, router, usePage } from "@inertiajs/vue3";
 import {
     Dialog, DialogPanel,
     Menu,
@@ -117,9 +122,6 @@ import {
 } from "@headlessui/vue";
 import { Bars3Icon, ShoppingBagIcon, UserIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 
-const route = inject('route');
-const open = ref(false);
-
 const props = defineProps({
     cart: {
         type: Object,
@@ -130,6 +132,26 @@ const props = defineProps({
         default: false
     }
 });
+
+const logged = ref(props.logged);
+const cart = ref(props.cart);
+
+watch(
+    () => props.logged,
+    () => {
+        logged.value = props.logged;
+    },
+);
+
+watch(
+    () => props.cart,
+    () => {
+        cart.value = props.cart;
+    },
+);
+
+const route = inject('route');
+const open = ref(false);
 
 const messages = {
     en: {
@@ -157,6 +179,27 @@ const navigation = {
         { name: i18n.global.t('blog'), href: route('post.index') }
     ],
 }
+
+const loadingState = ref(false);
+
+onMounted(async () => {
+    loadingState.value = true;
+
+    try {
+        const [accountRes, cartRes] = await Promise.all([
+            axios.get(route('account.state')),
+            axios.get(route('cart.state')),
+        ]);
+
+        logged.value = accountRes.data.logged;
+        cart.value = cartRes.data.cart;
+
+        loadingState.value = false;
+    } catch (error) {
+        console.error(error);
+        loadingState.value = false;
+    }
+});
 
 const logout = () => {
     router.visit(route('logout.store'), {

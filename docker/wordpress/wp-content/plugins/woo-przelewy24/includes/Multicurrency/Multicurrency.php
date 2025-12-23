@@ -47,7 +47,7 @@ class Multicurrency extends Module
         return $result;
     }
 
-    public static function get_config(string $currency_code = null): Currency_Config
+    public static function get_config(?string $currency_code = null): Currency_Config
     {
         $config = new Currency_Config();
 

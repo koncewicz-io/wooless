@@ -65,13 +65,14 @@ class Client_Page extends Account_Page
     {
         global $current_user;
 
-        $items = Reference::findAll([
+        $card_references = Reference::findAll([
             'select' => ['t.*', 'COUNT(subscriptions.card_id) as subs'],
-            'where' => ['user.ID = %d', (int)$current_user->ID],
+            'where' => ['user.ID = %d AND t.type != %s', (int)$current_user->ID, Reference::TYPE_BLIK],
             'join' => 'LEFT OUTER JOIN ' . Subscription::table_name() . ' as subscriptions ON subscriptions.card_id = t.id',
             'group_by' => 't.id'
         ]);
 
+        $items = array_merge($card_references, One_Clicks::get_blik_aliases());
         $nonce = wp_create_nonce('remove_one_click');
 
         Render::template('account/one-click-tab', ['items' => $items, 'nonce' => $nonce], true);

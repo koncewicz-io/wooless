@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use AllowDynamicProperties;
-use App\Services\Auth;
-use App\Services\FrontCart;
 use App\Services\FrontPost;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise;
@@ -18,9 +16,7 @@ use Inertia\Response;
 #[AllowDynamicProperties] class PostController extends Controller
 {
     public function __construct(
-        protected FrontPost $frontPost,
-        protected FrontCart $frontCart,
-        protected Auth $auth
+        protected FrontPost $frontPost
     )
     {
         $this->client = new Client([
@@ -51,34 +47,14 @@ use Inertia\Response;
                     'per_page' => 10,
                     'exclude' => 1
                 ]],
-            ),
-
-            'cart' => $this->client->getAsync(
-                uri: 'wc/store/v1/cart',
-                options: ['headers' => ['Cart-Token' => $this->frontCart->cartToken()]]
-            ),
-
-            'auth' => $this->client->postAsync(
-                uri: 'jwt-auth/v1/token/validate',
-                options: [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $this->auth->token()
-                    ]
-                ]
             )
         ];
 
         $responses = Promise\Utils::settle($promises)->wait();
 
-        $logged = false;
-        if ($responses['auth']['state'] === 'fulfilled') {
-            $logged = true;
-        }
-
-        $rejected = $this->rejected($responses, ['posts', 'categories', 'cart']);
+        $rejected = $this->rejected($responses, ['posts', 'categories']);
         if ($rejected) {
             return Inertia::render('Post/Index', [
-                'cart' => [],
                 'posts' => [],
                 'filters' => [
                     [
@@ -86,15 +62,11 @@ use Inertia\Response;
                         'name' => __('Category'),
                         'options' => []
                     ],
-                ],
-                'logged' => $logged
+                ]
             ]);
         }
 
-        $this->frontCart->saveCartToken($responses['cart']['value']);
-
         return Inertia::render('Post/Index', [
-            'cart' => $this->frontCart->cartResponse($responses['cart']['value']),
             'posts' => $this->frontPost->postsResponse($responses['posts']['value']),
             'filters' => [
                 [
@@ -105,8 +77,7 @@ use Inertia\Response;
                         (array)$request->category
                     )
                 ],
-            ],
-            'logged' => $logged
+            ]
         ]);
     }
 }

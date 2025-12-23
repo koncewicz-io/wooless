@@ -49,7 +49,7 @@ class Compatibility_Checker
 
         if (!$is_valid) {
             /* translators: 1: Required PHP version, 2: Current PHP version */
-            new Notice(sprintf(__('At least PHP version %1$s is required. Current version: %2$s.', 'woocommerce-p24'), $min_version, PHP_VERSION), Notice::ERROR);
+            new Notice(sprintf(__('At least PHP version %1$s is required to use the Przelewy24 Payment Gateway plugin. Current version: %2$s.', 'woocommerce-p24'), $min_version, PHP_VERSION), Notice::ERROR);
         }
 
         return $is_valid;
@@ -57,11 +57,16 @@ class Compatibility_Checker
 
     private static function check_wc_version(string $min_version): bool
     {
-        $is_valid = defined('WC_VERSION') && version_compare(WC_VERSION, $min_version, '>=');
+        if (!defined('WC_VERSION')) {
+            new Notice(__('WooCommerce is not active. Please activate WooCommerce to use the Przelewy24 Payment Gateway plugin.', 'woocommerce-p24'), Notice::ERROR);
+            return false;
+        }
+
+        $is_valid = version_compare(WC_VERSION, $min_version, '>=');
 
         if (!$is_valid) {
             /* translators: 1: Required WooCommerce version, 2: Current WooCommerce version */
-            new Notice(sprintf(__('At least Woocommerce version %1$s is required. Current version: %2$s.', 'woocommerce-p24'), $min_version, WC_VERSION), Notice::ERROR);
+            new Notice(sprintf(__('At least WooCommerce version %1$s is required to use the Przelewy24 Payment Gateway plugin. Current version: %2$s.', 'woocommerce-p24'), $min_version, WC_VERSION), Notice::ERROR);
         }
 
         return $is_valid;

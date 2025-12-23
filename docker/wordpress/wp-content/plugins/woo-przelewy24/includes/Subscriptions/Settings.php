@@ -6,12 +6,6 @@ use WC_P24\Utilities\Module_Settings;
 
 class Settings extends Module_Settings
 {
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function get_handle(): string
     {
         return 'subscription';
