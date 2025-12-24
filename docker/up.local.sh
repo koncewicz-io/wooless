@@ -18,6 +18,14 @@ WORDPRESS_PLUGIN_JWT_AUTH_VERSION=3.0.2
 # Start containers
 docker compose -f docker-compose.local.yml -p wooless up -d
 
+echo "Waiting for nginx (supervisor) to be RUNNING..."
+until docker exec "$DOCKER_WORDPRESS_APP_CONTAINER" sh -lc \
+  'supervisorctl status nginx | grep -q RUNNING'
+do
+  echo "nginx is not running yet... retrying in 5s"
+  sleep 5
+done
+
 docker exec $DOCKER_WORDPRESS_APP_CONTAINER mkdir -p /var/www/.wp-cli/cache
 docker exec $DOCKER_WORDPRESS_APP_CONTAINER chown -R www-data:www-data /var/www/.wp-cli
 docker exec $DOCKER_WORDPRESS_APP_CONTAINER chmod -R 750 /var/www/.wp-cli
