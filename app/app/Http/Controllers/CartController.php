@@ -37,39 +37,23 @@ use Inertia\Response;
             'cart' => $this->client->getAsync(
                 uri: 'wc/store/v1/cart',
                 options: ['headers' => ['Cart-Token' => $this->frontCart->cartToken()]]
-            ),
-
-            'auth' => $this->client->postAsync(
-                uri: 'jwt-auth/v1/token/validate',
-                options: [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $this->auth->token()
-                    ]
-                ]
-            ),
+            )
         ];
 
         $responses = Promise\Utils::settle($promises)->wait();
-
-        $logged = false;
-        if ($responses['auth']['state'] === 'fulfilled') {
-            $logged = true;
-        }
 
         $rejected = $this->rejected($responses, ['cart']);
 
         if ($rejected) {
             return Inertia::render('Cart/Index', [
-                'cart' => [],
-                'logged' => $logged
+                'cart' => []
             ]);
         }
 
         $this->frontCart->saveCartToken($responses['cart']['value']);
 
         return Inertia::render('Cart/Index', [
-            'cart' => $this->frontCart->cartResponse($responses['cart']['value']),
-            'logged' => $logged
+            'cart' => $this->frontCart->cartResponse($responses['cart']['value'])
         ]);
     }
 

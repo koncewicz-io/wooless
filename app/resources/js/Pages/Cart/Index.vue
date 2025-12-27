@@ -1,7 +1,7 @@
 <template>
     <Head :title="i18n.global.t('head_title')" />
 
-    <AppLayout :cart="props.cart" :logged="logged">
+    <AppLayout :cart="props.cart">
         <div v-if="$page.props.errors.alert" class="pt-8 grid grid-cols-1 gap-y-2">
             <div
                 v-for="(message, key) in $page.props.errors.alert"
@@ -162,10 +162,6 @@ const route = inject('route');
 const props = defineProps({
     cart: {
         type: Object,
-    },
-    logged: {
-        type: Boolean,
-        default: false
     }
 });
 
